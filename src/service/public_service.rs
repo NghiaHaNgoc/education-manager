@@ -40,15 +40,14 @@ pub async fn login(
     };
     
     let token = create_token(account);
-    println!("Get: {}", token);
-    let cookie = create_cookie(&token);
+    // let cookie = create_cookie(&token);
 
-    let mut header_map = HeaderMap::new();
-    header_map.insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
-    header_map.insert(header::SET_COOKIE, cookie.to_string().parse().unwrap());
+    // let mut header_map = HeaderMap::new();
+    // header_map.insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+    // header_map.insert(header::SET_COOKIE, cookie.to_string().parse().unwrap());
 
 
-     GeneralResponse::new(StatusCode::OK, Some(header_map), LoginStatus::login_success(token))
+     GeneralResponse::new(StatusCode::OK, None, LoginStatus::login_success(token))
     
 }
 
@@ -72,11 +71,11 @@ fn create_token(account: RclAccount) -> String {
     token
 }
 
-fn create_cookie(token: &str) -> Cookie {
+/* fn create_cookie(token: &str) -> Cookie {
     Cookie::build("TKID", token.to_string())
         .path("/")
         .max_age(time::Duration::hours(1))
         .same_site(SameSite::None)
         .http_only(true)
         .finish()
-}
+} */
