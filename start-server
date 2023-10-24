@@ -1,4 +1,0 @@
-#!/usr/bin/sh
-
-exec surreal start file:education-manager -A --auth --user root --pass root & sleep 1s ; education-manager
-# & sleep 1s ; surreal import --conn http://localhost:8000 --user root --pass root --ns test --db test surreal_deal_v1.surql
