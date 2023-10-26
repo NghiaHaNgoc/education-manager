@@ -20,7 +20,7 @@
 ## Amin
  - API for role admin
 
-### End point `admin/student-lists`
+### End point `admin/students-list`
  - Method: `GET`
- - Default optional params: `page_number=1&student_per_page=24`
+ - Default optional params: `page_number=1`, `student_per_page=24`
 
