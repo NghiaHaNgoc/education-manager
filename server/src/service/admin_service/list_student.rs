@@ -33,7 +33,7 @@ pub async fn list_student(
     let page_number = page_number.unwrap_or(1);
     let students_per_page = students_per_page.unwrap_or(24);
     let from_index = (page_number - 1)*students_per_page;
-    let to_index = from_index + students_per_page;
+    let to_index = from_index + students_per_page - 1;
 
     let student_query = db.lock().await
         .from("student")
