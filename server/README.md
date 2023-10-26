@@ -3,6 +3,9 @@
 ## [Server link](https://education-manager.fly.dev/fer201m/api)
  - Ensure header set `"Content-Type" : "application/json"`
 
+## General
+ - This end point for all students, lecturers and admins
+
 ### End point `login`
  - Method: `POST`
  - Body:
@@ -22,5 +25,8 @@
 
 ### End point `admin/students-list`
  - Method: `GET`
- - Default optional params: `page_number=1`, `student_per_page=24`
+ - Default optional params: `page_number=1`, `students_per_page=24`
 
+### End point `admin/lecturers-list`
+ - Method: `GET`
+ - Default optional params: `page_number=1`, `lecturers_per_page=24`
