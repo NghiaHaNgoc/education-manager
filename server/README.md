@@ -1,7 +1,7 @@
 # Student manager
 
-## [Server link](https://nghiahangoc.onrender.com/fer201m/api)
- - Nothing here
+## [Server link](https://education-manager.fly.dev/fer201m/api)
+ - Ensure header set `"Content-Type" : "application/json"`
 
 ### End point `login`
  - Method: `POST`
@@ -12,5 +12,15 @@
  "password": "your password"
  }
 ```
- - Ensure header set `"Content-Type" : "application/json"`
+
+### End point `profile`
+ - Method: `GET`
+ - Make sure included Bearer token in header
+
+## Amin
+ - API for role admin
+
+### End point `admin/student-lists`
+ - Method: `GET`
+ - Default optional params: `page_number=1&student_per_page=24`
 

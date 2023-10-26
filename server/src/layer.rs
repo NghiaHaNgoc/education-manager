@@ -1,35 +1,27 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::State,
-    http::{header, Request, StatusCode},
-    middleware::Next,
-    response::{IntoResponse, Response}, Extension,
-};
+use axum::extract::State;
+use axum::http::{header, Request};
+use axum::middleware::Next;
+use axum::response::{IntoResponse, Response};
+use axum::Extension;
 use jsonwebtoken::{DecodingKey, Validation};
-use surrealdb::{engine::remote::http::Client, opt::RecordId, Surreal};
+use postgrest::Postgrest;
 use tokio::sync::Mutex;
 
 use crate::model::{
-    database_model::{Account, Role}, ErrorMessage, GeneralResponse, TokenClaims, SECRECT_KEY,
+    database_model::{Admin, Lecturer, Role, Student},
+    GeneralResponse, TokenClaims, SECRECT_KEY,
 };
 
 pub async fn extract_authorization<B>(
-    State(db): State<Arc<Mutex<Surreal<Client>>>>,
+    State(db): State<Arc<Mutex<Postgrest>>>,
     mut req: Request<B>,
     next: Next<B>,
 ) -> Response {
     let token = match get_header_auth(&req) {
         Some(tk) => tk,
-        None => {
-            return GeneralResponse::new(
-                StatusCode::UNAUTHORIZED,
-                None,
-                ErrorMessage::new(StatusCode::UNAUTHORIZED, String::from("Unautorrized!"))
-                    .to_json(),
-            )
-            .into_response()
-        }
+        None => return GeneralResponse::unauthorized(None).into_response(),
     };
     let claims = match jsonwebtoken::decode::<TokenClaims>(
         &token,
@@ -37,50 +29,65 @@ pub async fn extract_authorization<B>(
         &Validation::default(),
     ) {
         Ok(claim_data) => claim_data.claims,
-        Err(err) => {
-            return GeneralResponse::new(
-                StatusCode::UNAUTHORIZED,
-                None,
-                ErrorMessage::new(StatusCode::UNAUTHORIZED, err.to_string()).to_json(),
-            )
-            .into_response()
-        }
+        Err(err) => return GeneralResponse::unauthorized(Some(err.to_string())).into_response(),
     };
 
-    let query = format!(
-        "SELECT role, user_profile from accounts where role = \"{}\" && user_profile = \"{}\"",
-        claims.role, claims.id
-    );
-    println!("{}", query);
-    match db
-        .lock()
-        .await
-        .query(query)
-        .await
-        .unwrap()
-        .take::<Option<Account>>(0)
-    {
-        Ok(result) => match result {
-            None => {
-                return GeneralResponse::new(
-                    StatusCode::UNAUTHORIZED,
-                    None,
-                    ErrorMessage::new(StatusCode::UNAUTHORIZED, String::from("Unautorrized!"))
-                        .to_json(),
-                )
-                .into_response()
-            }
-            Some(_) => (),
-        },
-        Err(err) => {
-            return GeneralResponse::new(
-                StatusCode::UNAUTHORIZED,
-                None,
-                ErrorMessage::new(StatusCode::UNAUTHORIZED, err.to_string()).to_json(),
-            )
-            .into_response()
+    match claims.role {
+        Role::Student => {
+            let a = db
+                .lock()
+                .await
+                .from("student")
+                .select("*")
+                .eq("student_id", claims.user_id.as_str())
+                .execute()
+                .await
+                .unwrap()
+                .text()
+                .await
+                .unwrap();
+            let list_student: Vec<Student> = serde_json::from_str(a.as_str()).unwrap();
+            if list_student.len() == 0 {
+                return GeneralResponse::unauthorized(None).into_response();
+            };
         }
-    };
+        Role::Lecturer => {
+            let a = db
+                .lock()
+                .await
+                .from("lecturer")
+                .select("*")
+                .eq("lecturer_id", claims.user_id.as_str())
+                .execute()
+                .await
+                .unwrap()
+                .text()
+                .await
+                .unwrap();
+            let list_lecturer: Vec<Lecturer> = serde_json::from_str(a.as_str()).unwrap();
+            if list_lecturer.len() == 0 {
+                return GeneralResponse::unauthorized(None).into_response();
+            };
+        }
+        Role::Admin => {
+            let a = db
+                .lock()
+                .await
+                .from("admin")
+                .select("*")
+                .eq("admin_id", claims.user_id.as_str())
+                .execute()
+                .await
+                .unwrap()
+                .text()
+                .await
+                .unwrap();
+            let list_admin: Vec<Admin> = serde_json::from_str(a.as_str()).unwrap();
+            if list_admin.len() == 0 {
+                return GeneralResponse::unauthorized(None).into_response();
+            }
+        }
+    }
     req.extensions_mut().insert(claims);
 
     next.run(req).await.into_response()
@@ -100,24 +107,36 @@ fn get_header_auth<B>(req: &Request<B>) -> Option<String> {
         })
 }
 
-pub async fn student_layer<B>(Extension(user_claims): Extension<TokenClaims>,req: Request<B>, next: Next<B>) -> Response {
-    if user_claims.role == Role::STUDENT {
+pub async fn student_layer<B>(
+    Extension(user_claims): Extension<TokenClaims>,
+    req: Request<B>,
+    next: Next<B>,
+) -> Response {
+    if user_claims.role == Role::Student {
         next.run(req).await
     } else {
-        GeneralResponse::unauthorized().into_response()
+        GeneralResponse::unauthorized(None).into_response()
     }
 }
-pub async fn teacher_layer<B>(Extension(user_claims): Extension<TokenClaims>,req: Request<B>, next: Next<B>) -> Response {
-    if user_claims.role == Role::TEACHER {
+pub async fn teacher_layer<B>(
+    Extension(user_claims): Extension<TokenClaims>,
+    req: Request<B>,
+    next: Next<B>,
+) -> Response {
+    if user_claims.role == Role::Lecturer {
         next.run(req).await
     } else {
-        GeneralResponse::unauthorized().into_response()
+        GeneralResponse::unauthorized(None).into_response()
     }
 }
-pub async fn admin_layer<B>(Extension(user_claims): Extension<TokenClaims>,req: Request<B>, next: Next<B>) -> Response {
-    if user_claims.role == Role::ADMIN {
+pub async fn admin_layer<B>(
+    Extension(user_claims): Extension<TokenClaims>,
+    req: Request<B>,
+    next: Next<B>,
+) -> Response {
+    if user_claims.role == Role::Admin {
         next.run(req).await
     } else {
-        GeneralResponse::unauthorized().into_response()
+        GeneralResponse::unauthorized(None).into_response()
     }
 }

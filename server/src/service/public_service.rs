@@ -1,68 +1,128 @@
 use std::sync::Arc;
 
 use axum::extract::State;
-use axum::http::{StatusCode, header, HeaderMap, HeaderValue};
-use axum::response::Response;
+use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
 use axum::{response::IntoResponse, Json};
 use axum_extra::extract::cookie::{Cookie, SameSite};
 use chrono::{Duration, Utc};
-use jsonwebtoken::{Header, EncodingKey};
-use surrealdb::engine::remote::http::Client;
-use surrealdb::Surreal;
+use jsonwebtoken::{EncodingKey, Header};
+use postgrest::Postgrest;
+use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
 
-use crate::model::database_model::Account;
-use crate::model::{LoginData, GeneralResponse, LoginSuccess, TokenClaims, SECRECT_KEY};
+use crate::model::database_model::Role;
+use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECRECT_KEY};
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct CustomUser {
+    user_id: Option<String>,
+    role: Option<Role>,
+}
 
 pub async fn login(
-    db: State<Arc<Mutex<Surreal<Client>>>>,
+    State(db): State<Arc<Mutex<Postgrest>>>,
     Json(login_data): Json<LoginData>,
 ) -> impl IntoResponse {
     println!("{:?}", login_data);
     // Prepare response;
+    let mut user = CustomUser {
+        user_id: None,
+        role: None,
+    };
+    let mut verified = false;
 
-    let db_lock = db.lock().await;
-    let query = format!(
-        "SELECT user_profile, role from accounts where username = \"{}\" && password = \"{}\";",
-        login_data.username, login_data.password
-    );
-    let a:Option<Account> = match db_lock.query(query).await.unwrap().take(0) {
-        Ok(account) => account,
-        Err(err) => {
-            println!("{}", err.to_string());
-            return GeneralResponse::internal_server_error(err.to_string())
+    // NOTE: initialize send query to database
+    let student_query = db
+        .lock()
+        .await
+        .from("student")
+        .select("user_id:student_id")
+        .and(format!(
+            "student_id.eq.{}, password.eq.{}",
+            login_data.username, login_data.password
+        ))
+        .execute();
+    let lecturer_query = db
+        .lock()
+        .await
+        .from("lecturer")
+        .select("user_id:lecturer_id")
+        .and(format!(
+            "lecturer_id.eq.{}, password.eq.{}",
+            login_data.username, login_data.password
+        ))
+        .execute();
+    let admin_query = db
+        .lock()
+        .await
+        .from("admin")
+        .select("user_id:admin_id")
+        .and(format!(
+            "admin_id.eq.{}, password.eq.{}",
+            login_data.username, login_data.password
+        ))
+        .execute();
+
+    // validate user
+    let student_json_list = student_query.await.unwrap().text().await.unwrap();
+    let mut student_list: Vec<CustomUser> =
+        serde_json::from_str(student_json_list.as_str()).unwrap();
+    if student_list.len() != 0 {
+        user = student_list.remove(0);
+        user.role = Some(Role::Student);
+        verified = true;
+    }
+
+    if !verified {
+        let lecturer_json_list = lecturer_query.await.unwrap().text().await.unwrap();
+        let mut lecturer_list: Vec<CustomUser> =
+            serde_json::from_str(lecturer_json_list.as_str()).unwrap();
+        if lecturer_list.len() != 0 {
+            user = lecturer_list.remove(0);
+            user.role = Some(Role::Lecturer);
+            verified = true;
         }
-    };
+    }
 
-    let account = match a {
-        Some(acc) => acc,
-        None => return GeneralResponse::unauthorized()
-    };
-    
-    let role = account.role.clone().unwrap();
-    let token = create_token(account);
+    if !verified {
+        let admin_json_list = admin_query.await.unwrap().text().await.unwrap();
+        let mut admin_list: Vec<CustomUser> =
+            serde_json::from_str(admin_json_list.as_str()).unwrap();
+        if admin_list.len() != 0 {
+            user = admin_list.remove(0);
+            user.role = Some(Role::Admin);
+            verified = true;
+        }
+    }
+
+    if !verified {
+        return GeneralResponse::unauthorized(Some("Login failed!".to_string()));
+    }
+    let role = user.role.clone().unwrap();
+    let token = create_token(user);
     let cookie = create_cookie(&token);
 
     let mut header_map = HeaderMap::new();
-    header_map.insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+    header_map.insert(
+        header::CONTENT_TYPE,
+        HeaderValue::from_static("application/json"),
+    );
     header_map.insert(header::SET_COOKIE, cookie.to_string().parse().unwrap());
 
-
-     GeneralResponse::new(StatusCode::OK, Some(header_map), LoginSuccess::to_json(token, role))
-    
+    GeneralResponse::new(
+        StatusCode::OK,
+        Some(header_map),
+        LoginSuccess::to_json(token, role),
+    )
 }
 
-fn create_token(account: Account) -> String {
-    let rcid = account.user_profile.unwrap();
-    let role = account.role.unwrap();
+fn create_token(user: CustomUser) -> String {
+    let user_id = user.user_id.unwrap();
+    let role = user.role.unwrap();
     let now = Utc::now();
-    let exp = (now + Duration::minutes(60)).timestamp() as usize;
+    let exp = (now + Duration::hours(12)).timestamp() as usize;
 
-    let claims = TokenClaims {
-        id: rcid,
-        role,
-        exp
-    };
+    let claims = TokenClaims { user_id, role, exp };
     let token = jsonwebtoken::encode(
         &Header::default(),
         &claims,
