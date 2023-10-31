@@ -1,7 +1,6 @@
 import { UserOutlined , HomeOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import {useNavigate , useLocation} from 'react-router-dom'
-import {useState} from 'react'
 
 export default function NavbarLeft() {
     const navigate = useNavigate();

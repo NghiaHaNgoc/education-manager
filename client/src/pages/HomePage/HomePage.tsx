@@ -3,6 +3,7 @@ import {useState} from 'react'
 import {MenuUnfoldOutlined ,MenuFoldOutlined} from '@ant-design/icons'
 import NavbarLeft from '../../components/NavbarLeft/NavbarLeft';
 import {Outlet} from 'react-router-dom'
+import './HomePage.css'
 
 export default function HomePage() {
     const { Header, Sider, Content } = Layout;
@@ -23,9 +24,9 @@ export default function HomePage() {
                         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                         onClick={() => setCollapsed(!collapsed)}
                         style={{
-                        fontSize: '16px',
-                        width: 64,
-                        height: 64,
+                            fontSize: '16px',
+                            width: 64,
+                            height: 64,
                         }}
                     />
                 </Header>
