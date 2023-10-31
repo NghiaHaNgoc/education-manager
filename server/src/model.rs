@@ -100,6 +100,22 @@ impl GeneralResponse {
             body,
         }
     }
+    pub fn bad_request(message: String) -> GeneralResponse {
+
+        let mut head = HeaderMap::new();
+        head.append(
+            header::CONTENT_TYPE,
+            HeaderValue::from_static("application/json"),
+        );
+        GeneralResponse {
+            status_code: StatusCode::BAD_REQUEST,
+            header: head,
+            body: BodyMessage {
+                code_status: StatusCode::BAD_REQUEST.as_u16(),
+                message
+            }.to_json()
+        }
+    }
 }
 
 impl IntoResponse for GeneralResponse {

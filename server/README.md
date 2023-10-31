@@ -3,9 +3,12 @@
 ## [Server link](https://education-manager.fly.dev/fer201m/api)
  - Ensure header set `"Content-Type" : "application/json"`
 
+ - NOTE:
+ - `gender` field only accept `Male` and `Female`
+ - `birth` field follow format `YYYY-MM-DD` or `YYYY/MM/DD`
+
 ## General
  - This end point for all students, lecturers and admins
-
 ### End point `login`
  - Method: `POST`
  - Body:
@@ -20,7 +23,17 @@
  - Method: `GET`
  - Make sure included Bearer token in header
 
-## Amin
+### End point `update-profile`
+ - Method: `POST`
+ - body: field can update is `full_name`, `birth`, `gender`, `address`, `email`, `phone`, `password`
+ Example: 
+ ```json
+ {
+ "full_name": "Nghia"
+ }
+ ```
+
+## Admin
  - API for role admin
 
 ### End point `admin/students-list`
