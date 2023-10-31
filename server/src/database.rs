@@ -1,16 +1,9 @@
-use surrealdb::engine::remote::http::{Https, Client};
-// use surrealdb::engine::remote::ws::{Client, Ws};
-use surrealdb::opt::auth::Root;
-use surrealdb::Surreal;
+use postgrest::Postgrest;
 
-pub async fn database_connection() -> Surreal<Client> {
-    let db = Surreal::new::<Https>("educationmanagerdatabase-27wvtb7g.b4a.run").await.unwrap();
-    db.signin(Root {
-        username: "root",
-        password: "root",
-    })
-    .await
-    .unwrap();
-    db.use_ns("FER201m").use_db("FER201m").await.unwrap();
-    db
+use crate::model::{SUPABASE_URL, SUPABASE_ANON_KEY};
+
+
+pub fn database_connection() -> Postgrest {
+    Postgrest::new(SUPABASE_URL).insert_header("apikey", SUPABASE_ANON_KEY)
+
 }

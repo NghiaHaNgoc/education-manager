@@ -1,8 +1,14 @@
 # Student manager
 
-## [Server link](https://nghiahangoc.onrender.com/fer201m/api)
- - Nothing here
+## [Server link](https://education-manager.fly.dev/fer201m/api)
+ - Ensure header set `"Content-Type" : "application/json"`
 
+ - NOTE:
+ - `gender` field only accept `Male` and `Female`
+ - `birth` field follow format `YYYY-MM-DD` or `YYYY/MM/DD`
+
+## General
+ - This end point for all students, lecturers and admins
 ### End point `login`
  - Method: `POST`
  - Body:
@@ -12,5 +18,28 @@
  "password": "your password"
  }
 ```
- - Ensure header set `"Content-Type" : "application/json"`
 
+### End point `profile`
+ - Method: `GET`
+ - Make sure included Bearer token in header
+
+### End point `update-profile`
+ - Method: `POST`
+ - body: field can update is `full_name`, `birth`, `gender`, `address`, `email`, `phone`, `password`
+ Example: 
+ ```json
+ {
+ "full_name": "Nghia"
+ }
+ ```
+
+## Admin
+ - API for role admin
+
+### End point `admin/students-list`
+ - Method: `GET`
+ - Default optional params: `page_number=1`, `students_per_page=24`
+
+### End point `admin/lecturers-list`
+ - Method: `GET`
+ - Default optional params: `page_number=1`, `lecturers_per_page=24`
