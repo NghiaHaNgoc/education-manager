@@ -83,3 +83,12 @@ pub struct Student {
     pub password: Option<String>
 }
 
+#[skip_serializing_none]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Class {
+    #[serde(skip_serializing)]
+    pub id: Option<u32>,
+    pub class_code: Option<String>,
+    pub description: Option<String>
+}
+
