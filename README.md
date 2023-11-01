@@ -45,6 +45,10 @@
  - Method: `GET`
  - Default optional params: `page_number=1`, `lecturers_per_page=24`
 
+### End point `admin/classes-list`
+ - Method: `GET`
+ - Default optional params: `page_number=1`, `classes_per_page=24`
+
 ### End point `admin/create-user`
  - Method: `POST`
  - Body:  
@@ -58,3 +62,15 @@
  ```
 - `role`, `full_name`, `gender`,`birth` are required.
 - `address`, `email`, `phone` are optional.
+
+### End point `admin/create-class`
+ - Method: `POST`
+ - Body:  
+ ```json
+{
+    "class_code": "10A01",
+    "description": "Class 10A01"
+}
+ ```
+- `class_code` is required.
+- `description` is optional.
