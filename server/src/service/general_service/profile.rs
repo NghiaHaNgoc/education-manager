@@ -7,7 +7,6 @@ use axum::response::IntoResponse;
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use tokio::sync::Mutex;
 
 #[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -30,7 +29,7 @@ pub struct InClassProfile {
 
 pub async fn profile(
     Extension(user_data): Extension<TokenClaims>,
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
 ) -> impl IntoResponse {
     match user_data.role {
         Role::Admin => get_admin_profile(user_data, db).await,
@@ -39,12 +38,10 @@ pub async fn profile(
 }
 async fn get_student_and_lecturer_profile(
     user_data: TokenClaims,
-    db: Arc<Mutex<Postgrest>>,
+    db: Arc<Postgrest>,
 ) -> GeneralResponse {
     let table_name = user_data.role.to_string().to_lowercase();
     let text_data = db
-        .lock()
-        .await
         .from(&table_name)
         .select(format!("user_id:{}_id, full_name, birth, gender, address, email, phone, in_class:{}_in_class(class(class_code, description))", table_name, table_name))
         .eq(format!("{}_id", table_name), user_data.user_id)
@@ -64,10 +61,8 @@ async fn get_student_and_lecturer_profile(
     }
 }
 
-async fn get_admin_profile(user_data: TokenClaims, db: Arc<Mutex<Postgrest>>) -> GeneralResponse {
+async fn get_admin_profile(user_data: TokenClaims, db: Arc<Postgrest>) -> GeneralResponse {
     let text_data = db
-        .lock()
-        .await
         .from("admin")
         .select("user_id:admin_id, full_name, birth, gender, address, email, phone")
         .eq("admin_id", user_data.user_id)

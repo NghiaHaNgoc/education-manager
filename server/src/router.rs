@@ -16,7 +16,7 @@ use crate::service::general_service::profile::profile;
 use crate::service::public_service::login;
 
 
-pub fn global_router(database: Arc<Mutex<Postgrest>>) -> Router {
+pub fn global_router(database: Arc<Postgrest>) -> Router {
     let router = Router::new()
         .merge(public_router(database.clone()))
         .merge(authentication_router(database.clone()));
@@ -26,13 +26,13 @@ pub fn global_router(database: Arc<Mutex<Postgrest>>) -> Router {
         .layer(CorsLayer::very_permissive())
 }
 
-fn public_router(database: Arc<Mutex<Postgrest>>) -> Router {
+fn public_router(database: Arc<Postgrest>) -> Router {
     Router::new()
         .route("/login", post(login))
         .with_state(database)
 }
 
-fn authentication_router(database: Arc<Mutex<Postgrest>>) -> Router {
+fn authentication_router(database: Arc<Postgrest>) -> Router {
     Router::new()
         .route("/profile", get(profile))
         .route("/update-profile", post(update_profile::update_profile))
@@ -44,7 +44,7 @@ fn authentication_router(database: Arc<Mutex<Postgrest>>) -> Router {
         ))
 }
 
-fn admin_router(database: Arc<Mutex<Postgrest>>) -> Router {
+fn admin_router(database: Arc<Postgrest>) -> Router {
     Router::new().nest(
         "/admin",
         Router::new()

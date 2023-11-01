@@ -7,7 +7,6 @@ use axum::{
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::{database_model::Lecturer, GeneralResponse};
 
@@ -29,7 +28,7 @@ pub struct QueryOptions {
 }
 
 pub async fn list_lecturer(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Query(QueryOptions {
         page_number,
         lecturers_per_page,
@@ -41,8 +40,6 @@ pub async fn list_lecturer(
     let to_index = from_index + lecturers_per_page - 1;
 
     let lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
         .select("lecturer_id, full_name, birth, gender, address, email, phone")
         .exact_count()

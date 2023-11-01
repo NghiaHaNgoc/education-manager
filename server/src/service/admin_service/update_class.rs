@@ -5,12 +5,11 @@ use axum::{
     Json, response::IntoResponse,
 };
 use postgrest::Postgrest;
-use tokio::sync::Mutex;
 
 use crate::model::{database_model::Class, GeneralResponse, DatabaseResponseError};
 
 pub async fn update_class(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Path(current_class_code): Path<String>,
     Json(mut update_class): Json<Class>,
 ) -> impl IntoResponse {
@@ -20,8 +19,6 @@ pub async fn update_class(
     };
 
     let db_response = db
-        .lock()
-        .await
         .from("class")
         .eq("class_code", current_class_code)
         .update(serde_json::to_string(&update_class).unwrap())

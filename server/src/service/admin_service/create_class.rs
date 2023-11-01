@@ -4,7 +4,6 @@ use axum::{extract::State, Json, response::IntoResponse};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use tokio::sync::Mutex;
 
 use crate::model::{GeneralResponse, DatabaseResponseError};
 
@@ -17,7 +16,7 @@ pub struct NewClass {
 
 pub async fn create_class(
 
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Json(mut new_class): Json<NewClass>,
 ) -> impl IntoResponse {
     new_class.class_code = new_class.class_code.trim().to_uppercase();
@@ -25,7 +24,7 @@ pub async fn create_class(
     if new_class.class_code.is_empty() {
         return GeneralResponse::bad_request("Class code is empty!".to_string());
     }
-    let response = db.lock().await.from("class").insert(serde_json::to_string(&new_class).unwrap()).execute().await.unwrap();
+    let response = db.from("class").insert(serde_json::to_string(&new_class).unwrap()).execute().await.unwrap();
     if response.status().is_success() {
         GeneralResponse::ok(Some("Create class successfully!".to_string()))
     } else {

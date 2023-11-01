@@ -8,7 +8,6 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::database_model::Role;
 use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECRECT_KEY};
@@ -21,7 +20,7 @@ struct CustomUser {
 }
 
 pub async fn login(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Json(login_data): Json<LoginData>,
 ) -> impl IntoResponse {
     println!("{:?}", login_data);
@@ -35,8 +34,6 @@ pub async fn login(
 
     // NOTE: initialize send query to database
     let student_query = db
-        .lock()
-        .await
         .from("student")
         .select("user_id:student_id, full_name")
         .and(format!(
@@ -45,8 +42,6 @@ pub async fn login(
         ))
         .execute();
     let lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
         .select("user_id:lecturer_id, full_name")
         .and(format!(
@@ -55,8 +50,6 @@ pub async fn login(
         ))
         .execute();
     let admin_query = db
-        .lock()
-        .await
         .from("admin")
         .select("user_id:admin_id, full_name")
         .and(format!(

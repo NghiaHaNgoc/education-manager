@@ -13,7 +13,7 @@ mod layer;
 
 #[tokio::main]
 async fn main() {
-    let db = Arc::new(Mutex::new(database_connection()));
+    let db = Arc::new(database_connection());
     let app = global_router(db);
 
     let socket = SocketAddr::from(([0,0,0,0], 8080));

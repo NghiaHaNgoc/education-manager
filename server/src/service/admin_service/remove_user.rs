@@ -3,7 +3,6 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::database_model::{Role, User};
 use crate::model::{BodyMessage, GeneralResponse};
@@ -14,7 +13,7 @@ pub struct UserDeleted {
 }
 
 pub async fn remove_user(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Json(UserDeleted { mut user_id }): Json<UserDeleted>,
 ) -> impl IntoResponse {
     user_id = user_id.trim().to_uppercase();
@@ -26,8 +25,6 @@ pub async fn remove_user(
 
     let table_name = identify_role.to_string().to_lowercase();
     let result_text = db
-        .lock()
-        .await
         .from(&table_name)
         .eq(format!("{}_id", table_name), &user_id)
         .delete()

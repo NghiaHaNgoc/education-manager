@@ -4,7 +4,6 @@ use axum::{extract::State, response::IntoResponse, Json};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use tokio::sync::Mutex;
 
 use crate::model::{
     database_model::{Gender, Lecturer, Role, Student},
@@ -24,7 +23,7 @@ pub struct NewUser {
     pub phone: Option<String>,
 }
 pub async fn create_user(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Json(new_user): Json<NewUser>,
 ) -> impl IntoResponse {
     if let Some(response) = validate_info_create(&db, &new_user).await {
@@ -38,8 +37,6 @@ pub async fn create_user(
     let table_name = new_user.role.to_string().to_lowercase();
     println!("role: {}", table_name);
     let text_result = db
-        .lock()
-        .await
         .from(&table_name)
         .insert(format!("[{}]", serde_json::to_string(&new_user).unwrap()))
         .execute()
@@ -69,7 +66,7 @@ pub async fn create_user(
     }
 }
 async fn validate_info_create(
-    db: &Arc<Mutex<Postgrest>>,
+    db: &Arc<Postgrest>,
     new_user: &NewUser,
 ) -> Option<GeneralResponse> {
     // NOTE: validate email & phone
@@ -99,7 +96,7 @@ struct DuplicateEmailOrPhone {
 }
 
 async fn validate_email_and_phone(
-    db: &Arc<Mutex<Postgrest>>,
+    db: &Arc<Postgrest>,
     email: &String,
     phone: &String,
 ) -> Option<GeneralResponse> {
@@ -108,22 +105,16 @@ async fn validate_email_and_phone(
         duplicated_phone: false,
     };
     let duplicated_email_or_phone_student_query = db
-        .lock()
-        .await
         .from("student")
         .select("email, phone")
         .or(format!("email.eq.{}, phone.eq.{}", email, phone))
         .execute();
     let duplicated_email_or_phone_lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
         .select("email, phone")
         .or(format!("email.eq.{}, phone.eq.{}", email, phone))
         .execute();
     let duplicated_email_or_phone_admin_query = db
-        .lock()
-        .await
         .from("admin")
         .select("email, phone")
         .or(format!("email.eq.{}, phone.eq.{}", email, phone))
@@ -201,28 +192,22 @@ async fn validate_email_and_phone(
     }
 }
 
-async fn validate_email(db: &Arc<Mutex<Postgrest>>, email: &String) -> Option<GeneralResponse> {
+async fn validate_email(db: &Arc<Postgrest>, email: &String) -> Option<GeneralResponse> {
     let error_response = Some(GeneralResponse::bad_request(
         "Email is duplicated!".to_string(),
     ));
 
     let duplicated_email_student_query = db
-        .lock()
-        .await
         .from("student")
         .select("email")
         .eq("email", email)
         .execute();
     let duplicated_email_lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
         .select("email")
         .eq("email", email)
         .execute();
     let duplicated_email_admin_query = db
-        .lock()
-        .await
         .from("admin")
         .select("email")
         .eq("email", email)
@@ -273,27 +258,21 @@ async fn validate_email(db: &Arc<Mutex<Postgrest>>, email: &String) -> Option<Ge
     return None;
 }
 
-async fn validate_phone(db: &Arc<Mutex<Postgrest>>, phone: &String) -> Option<GeneralResponse> {
+async fn validate_phone(db: &Arc<Postgrest>, phone: &String) -> Option<GeneralResponse> {
     let error_response = Some(GeneralResponse::bad_request(
         "Phone is duplicated!".to_string(),
     ));
     let duplicated_phone_student_query = db
-        .lock()
-        .await
         .from("student")
         .select("phone")
         .eq("phone", phone)
         .execute();
     let duplicated_phone_lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
         .select("phone")
         .eq("phone", phone)
         .execute();
     let duplicated_phone_admin_query = db
-        .lock()
-        .await
         .from("admin")
         .select("phone")
         .eq("phone", phone)

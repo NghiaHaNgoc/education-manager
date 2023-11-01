@@ -7,7 +7,6 @@ use axum::{
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::{database_model::Class, GeneralResponse};
 
@@ -25,7 +24,7 @@ pub struct QueryOptions {
 }
 
 pub async fn list_class(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Query(QueryOptions {
         page_number,
         classes_per_page,
@@ -37,8 +36,6 @@ pub async fn list_class(
     let to_index = from_index + classes_per_page - 1;
 
     let class_query = db
-        .lock()
-        .await
         .from("class")
         .select("class_code, description")
         .exact_count()
