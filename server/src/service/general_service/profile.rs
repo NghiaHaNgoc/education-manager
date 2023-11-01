@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::model::database_model::{Class, Gender, Role, Student};
+use crate::model::database_model::{Class, Gender, Role};
 use crate::model::{GeneralResponse, TokenClaims};
 use axum::extract::{Extension, State};
 use axum::response::IntoResponse;
