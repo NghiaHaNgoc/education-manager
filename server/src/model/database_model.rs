@@ -40,6 +40,21 @@ impl fmt::Display for Gender {
 
 #[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct User {
+    #[serde(skip_serializing)]
+    pub id: Option<u32>,
+    pub user_id: Option<String>,
+    pub full_name: Option<String>,
+    pub birth: Option<String>,
+    pub gender: Option<Gender>,
+    pub address: Option<String>,
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    pub password: Option<String>
+}
+
+#[skip_serializing_none]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Admin {
     #[serde(skip_serializing)]
     pub id: Option<u32>,

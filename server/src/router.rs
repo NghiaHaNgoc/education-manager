@@ -8,7 +8,7 @@ use tokio::sync::Mutex;
 use tower_http::cors::CorsLayer;
 
 use crate::layer::{admin_layer, extract_authorization};
-use crate::service::admin_service::{self, create_user};
+use crate::service::admin_service::{self, create_user, remove_user};
 use crate::service::admin_service::list_lecturer::list_lecturer;
 use crate::service::admin_service::list_student::list_student;
 use crate::service::general_service::{self, update_profile};
@@ -51,6 +51,7 @@ fn admin_router(database: Arc<Mutex<Postgrest>>) -> Router {
             .route("/students-list", get(list_student))
             .route("/lecturers-list", get(list_lecturer))
             .route("/create-user", post(create_user::create_user))
+            .route("/remove-user", post(remove_user::remove_user))
             .with_state(database.clone())
             .route_layer(middleware::from_fn(admin_layer)),
     )

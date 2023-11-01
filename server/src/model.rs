@@ -129,17 +129,21 @@ impl IntoResponse for GeneralResponse {
 pub struct LoginSuccess {
     pub code_status: u16,
     pub message: String,
-    pub role: Option<Role>,
     pub token: Option<String>,
+    pub role: Option<Role>,
+    pub user_id: Option<String>,
+    pub full_name: Option<String>
 }
 
 impl LoginSuccess {
-    pub fn to_json(token: String, role: Role) -> String {
+    pub fn to_json(token: String, role: Option<Role>, user_id: Option<String>, full_name: Option<String>) -> String {
         serde_json::to_string(&LoginSuccess {
             code_status: StatusCode::OK.as_u16(),
-            message: String::from("Login succcessfully!"),
-            role: Some(role),
+            message: String::from("Login successfully!"),
             token: Some(token),
+            role,
+            user_id,
+            full_name
         })
         .unwrap()
     }

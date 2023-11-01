@@ -17,6 +17,7 @@ use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECREC
 struct CustomUser {
     user_id: Option<String>,
     role: Option<Role>,
+    full_name: Option<String>
 }
 
 pub async fn login(
@@ -28,6 +29,7 @@ pub async fn login(
     let mut user = CustomUser {
         user_id: None,
         role: None,
+        full_name: None
     };
     let mut verified = false;
 
@@ -36,7 +38,7 @@ pub async fn login(
         .lock()
         .await
         .from("student")
-        .select("user_id:student_id")
+        .select("user_id:student_id, full_name")
         .and(format!(
             "student_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
@@ -46,7 +48,7 @@ pub async fn login(
         .lock()
         .await
         .from("lecturer")
-        .select("user_id:lecturer_id")
+        .select("user_id:lecturer_id, full_name")
         .and(format!(
             "lecturer_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
@@ -56,7 +58,7 @@ pub async fn login(
         .lock()
         .await
         .from("admin")
-        .select("user_id:admin_id")
+        .select("user_id:admin_id, full_name")
         .and(format!(
             "admin_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
@@ -98,7 +100,7 @@ pub async fn login(
     if !verified {
         return GeneralResponse::unauthorized(Some("Login failed!".to_string()));
     }
-    let role = user.role.clone().unwrap();
+    let CustomUser{role, user_id, full_name} = user.clone();
     let token = create_token(user);
     let cookie = create_cookie(&token);
 
@@ -112,7 +114,7 @@ pub async fn login(
     GeneralResponse::new(
         StatusCode::OK,
         Some(header_map),
-        LoginSuccess::to_json(token, role),
+        LoginSuccess::to_json(token, role, user_id, full_name),
     )
 }
 
