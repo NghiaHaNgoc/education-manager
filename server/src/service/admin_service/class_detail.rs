@@ -1,0 +1,6 @@
+
+fn class_detail(
+
+) {
+    
+}

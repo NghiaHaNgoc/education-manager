@@ -5,10 +5,8 @@ use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
 
-use crate::model::{
-    database_model::{Role, User},
-    BodyMessage, GeneralResponse,
-};
+use crate::model::database_model::{Role, User};
+use crate::model::{BodyMessage, GeneralResponse};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UserDeleted {
@@ -17,9 +15,10 @@ pub struct UserDeleted {
 
 pub async fn remove_user(
     State(db): State<Arc<Mutex<Postgrest>>>,
-    Json(user): Json<UserDeleted>,
+    Json(UserDeleted { mut user_id }): Json<UserDeleted>,
 ) -> impl IntoResponse {
-    let identify_role = match &user.user_id[..2] {
+    user_id = user_id.trim().to_uppercase();
+    let identify_role = match &user_id[..2] {
         "ST" => Role::Student,
         "LT" => Role::Lecturer,
         _ => return GeneralResponse::bad_request("ID is invalid!".to_string()),
@@ -30,7 +29,7 @@ pub async fn remove_user(
         .lock()
         .await
         .from(&table_name)
-        .eq(format!("{}_id", table_name), &user.user_id)
+        .eq(format!("{}_id", table_name), &user_id)
         .delete()
         .execute()
         .await
