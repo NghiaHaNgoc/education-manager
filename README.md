@@ -74,3 +74,13 @@
  ```
 - `class_code` is required.
 - `description` is optional.
+
+### End point `admin/remove-user`
+ - Method: `POST`
+ - Body:  
+ ```json
+{
+    "user_id": "ST00001"
+}
+ ```
+- `user_id` is required.
