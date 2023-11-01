@@ -52,7 +52,7 @@
 {
     "role": "Student",
     "full_name": "name",
-    "birth": "01-01-2003",
+    "birth": "2003-01-01",
     "gender": "Male"
 }
  ```
