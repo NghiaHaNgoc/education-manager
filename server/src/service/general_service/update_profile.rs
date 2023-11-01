@@ -44,7 +44,7 @@ pub async fn update_profile(
         return response;
     }
     update_user_profile(user_data, db, update_option).await;
-    return GeneralResponse::ok(
+    return GeneralResponse::body_ok(
         BodyMessage {
             code_status: StatusCode::OK.as_u16(),
             message: "Update profile successfully!".to_string(),

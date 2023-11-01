@@ -40,6 +40,22 @@ impl GeneralResponse {
             body,
         }
     }
+    pub fn ok(message: Option<String>) -> GeneralResponse {
+        let mut head = HeaderMap::new();
+        head.append(
+            header::CONTENT_TYPE,
+            HeaderValue::from_static("application/json"),
+        );
+        GeneralResponse {
+            status_code: StatusCode::OK,
+            header: head,
+            body: BodyMessage {
+                code_status: StatusCode::OK.as_u16(),
+                message: message.unwrap_or(String::from("Successfully!")),
+            }
+            .to_json(),
+        }
+    }
     pub fn unauthorized(message: Option<String>) -> GeneralResponse {
         let mut head = HeaderMap::new();
         head.append(
@@ -88,7 +104,7 @@ impl GeneralResponse {
             .to_json(),
         }
     }
-    pub fn ok(body: String) -> GeneralResponse {
+    pub fn body_ok(body: String) -> GeneralResponse {
         let mut head = HeaderMap::new();
         head.append(
             header::CONTENT_TYPE,
@@ -172,4 +188,13 @@ pub struct TokenClaims {
     pub user_id: String,
     pub role: Role,
     pub exp: usize,
+}
+
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct DatabaseResponseError {
+    pub code: String,
+    pub details: String,
+    pub hint: Option<String>,
+    pub message: String
 }

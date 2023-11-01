@@ -57,7 +57,7 @@ pub async fn list_class(
         total,
     };
 
-    GeneralResponse::ok(serde_json::to_string(&class_list_response).unwrap())
+    GeneralResponse::body_ok(serde_json::to_string(&class_list_response).unwrap())
 }
 
 fn get_range_and_total(header: &HeaderMap) -> (String, u32) {

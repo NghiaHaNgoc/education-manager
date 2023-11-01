@@ -56,14 +56,14 @@ pub async fn create_user(
                 Ok(student) => student,
                 Err(_) => return GeneralResponse::internal_server_error(None),
             };
-            GeneralResponse::ok(serde_json::to_string(&student.remove(0)).unwrap())
+            GeneralResponse::body_ok(serde_json::to_string(&student.remove(0)).unwrap())
         }
         Role::Lecturer => {
             let mut lecturer: Vec<Lecturer> = match serde_json::from_str(&text_result) {
                 Ok(lecturer) => lecturer,
                 Err(_) => return GeneralResponse::internal_server_error(None),
             };
-            GeneralResponse::ok(serde_json::to_string(&lecturer.remove(0)).unwrap())
+            GeneralResponse::body_ok(serde_json::to_string(&lecturer.remove(0)).unwrap())
         }
         Role::Admin => GeneralResponse::internal_server_error(None),
     }

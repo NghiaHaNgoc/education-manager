@@ -58,7 +58,7 @@ async fn get_student_and_lecturer_profile(
     if user_list.len() != 0 {
         let user = user_list.remove(0);
         let user_json = serde_json::to_string(&user).unwrap();
-        GeneralResponse::ok(user_json)
+        GeneralResponse::body_ok(user_json)
     } else {
         GeneralResponse::not_found(Some(String::from("Profile not found!")))
     }
@@ -81,7 +81,7 @@ async fn get_admin_profile(user_data: TokenClaims, db: Arc<Mutex<Postgrest>>) ->
     if admin_list.len() != 0 {
         let admin = admin_list.remove(0);
         let admin_json = serde_json::to_string(&admin).unwrap();
-        GeneralResponse::ok(admin_json)
+        GeneralResponse::body_ok(admin_json)
     } else {
         GeneralResponse::not_found(Some(String::from("Profile not found!")))
     }

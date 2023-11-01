@@ -40,7 +40,7 @@ pub async fn remove_user(
         .unwrap();
     let user_deleted: Vec<User> = serde_json::from_str(&result_text).unwrap();
     if user_deleted.len() != 0 {
-        GeneralResponse::ok(
+        GeneralResponse::body_ok(
             BodyMessage {
                 code_status: StatusCode::OK.as_u16(),
                 message: "Delete successfully!".to_string(),
