@@ -16,7 +16,7 @@ use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECREC
 struct CustomUser {
     user_id: Option<String>,
     role: Option<Role>,
-    full_name: Option<String>
+    full_name: Option<String>,
 }
 
 pub async fn login(
@@ -28,7 +28,7 @@ pub async fn login(
     let mut user = CustomUser {
         user_id: None,
         role: None,
-        full_name: None
+        full_name: None,
     };
     let mut verified = false;
 
@@ -93,7 +93,11 @@ pub async fn login(
     if !verified {
         return GeneralResponse::unauthorized(Some("Login failed!".to_string()));
     }
-    let CustomUser{role, user_id, full_name} = user.clone();
+    let CustomUser {
+        role,
+        user_id,
+        full_name,
+    } = user.clone();
     let token = create_token(user);
     let cookie = create_cookie(&token);
 

@@ -1,9 +1,9 @@
-pub mod create_user;
-pub mod create_class;
-pub mod list_student;
-pub mod list_lecturer;
-pub mod list_class;
-pub mod remove_user;
-pub mod remove_class;
-pub mod update_class;
 pub mod class_detail;
+pub mod create_class;
+pub mod create_user;
+pub mod list_class;
+pub mod list_lecturer;
+pub mod list_student;
+pub mod remove_class;
+pub mod remove_user;
+pub mod update_class;

@@ -65,10 +65,7 @@ pub async fn create_user(
         Role::Admin => GeneralResponse::internal_server_error(None),
     }
 }
-async fn validate_info_create(
-    db: &Arc<Postgrest>,
-    new_user: &NewUser,
-) -> Option<GeneralResponse> {
+async fn validate_info_create(db: &Arc<Postgrest>, new_user: &NewUser) -> Option<GeneralResponse> {
     // NOTE: validate email & phone
     if let (Some(email), Some(phone)) = (new_user.email.as_ref(), new_user.phone.as_ref()) {
         validate_email_and_phone(db, &email, &phone).await

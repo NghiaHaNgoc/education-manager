@@ -57,9 +57,9 @@ async fn validate_info_update(
     db: &Arc<Postgrest>,
     update_option: &UpdateProfileOption,
 ) -> Option<GeneralResponse> {
-
     // NOTE: validate email & phone
-    if let (Some(email), Some(phone)) = (update_option.email.as_ref(), update_option.phone.as_ref()) {
+    if let (Some(email), Some(phone)) = (update_option.email.as_ref(), update_option.phone.as_ref())
+    {
         validate_email_and_phone(user_data, db, &email, &phone).await
     } else {
         // NOTE: validate phone
@@ -181,145 +181,143 @@ async fn validate_email(
     email: &String,
 ) -> Option<GeneralResponse> {
     let error_response = Some(GeneralResponse::bad_request(
-                    "Email is duplicated!".to_string(),
-                ));
-    
-            let duplicated_email_student_query = db
-                .from("student")
-                .select("email")
-                .eq("email", email)
+        "Email is duplicated!".to_string(),
+    ));
+
+    let duplicated_email_student_query = db
+        .from("student")
+        .select("email")
+        .eq("email", email)
         .neq("student_id", user_data.user_id.as_str())
-                .execute();
-            let duplicated_email_lecturer_query = db
-                .from("lecturer")
-                .select("email")
-                .eq("email", email)
+        .execute();
+    let duplicated_email_lecturer_query = db
+        .from("lecturer")
+        .select("email")
+        .eq("email", email)
         .neq("lecturer_id", user_data.user_id.as_str())
-                .execute();
-            let duplicated_email_admin_query = db
-                .from("admin")
-                .select("email")
-                .eq("email", email)
+        .execute();
+    let duplicated_email_admin_query = db
+        .from("admin")
+        .select("email")
+        .eq("email", email)
         .neq("admin_id", user_data.user_id.as_str())
-                .execute();
+        .execute();
 
-            let db_email_or_phone_student: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_email_student_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
-            if db_email_or_phone_student.len() != 0 {
-                return error_response;
-            }
-
-            let db_email_or_phone_lecturer: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_email_lecturer_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
-
-            if db_email_or_phone_lecturer.len() != 0 {
-                return error_response;
-            }
-            let db_email_or_phone_admin: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_email_admin_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
-
-            if db_email_or_phone_admin.len() != 0 {
+    let db_email_or_phone_student: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_email_student_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+    if db_email_or_phone_student.len() != 0 {
         return error_response;
-            }
-            return None;
-}
+    }
 
+    let db_email_or_phone_lecturer: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_email_lecturer_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+
+    if db_email_or_phone_lecturer.len() != 0 {
+        return error_response;
+    }
+    let db_email_or_phone_admin: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_email_admin_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+
+    if db_email_or_phone_admin.len() != 0 {
+        return error_response;
+    }
+    return None;
+}
 
 async fn validate_phone(
     user_data: &TokenClaims,
     db: &Arc<Postgrest>,
     phone: &String,
 ) -> Option<GeneralResponse> {
-    
     let error_response = Some(GeneralResponse::bad_request(
-                    "Phone is duplicated!".to_string(),
-                ));
-            let duplicated_phone_student_query = db
-                .from("student")
-                .select("phone")
-                .eq("phone", phone)
+        "Phone is duplicated!".to_string(),
+    ));
+    let duplicated_phone_student_query = db
+        .from("student")
+        .select("phone")
+        .eq("phone", phone)
         .neq("student_id", user_data.user_id.as_str())
-                .execute();
-            let duplicated_phone_lecturer_query = db
-                .from("lecturer")
-                .select("phone")
-                .eq("phone", phone)
+        .execute();
+    let duplicated_phone_lecturer_query = db
+        .from("lecturer")
+        .select("phone")
+        .eq("phone", phone)
         .neq("lecturer_id", user_data.user_id.as_str())
-                .execute();
-            let duplicated_phone_admin_query = db
-                .from("admin")
-                .select("phone")
-                .eq("phone", phone)
+        .execute();
+    let duplicated_phone_admin_query = db
+        .from("admin")
+        .select("phone")
+        .eq("phone", phone)
         .neq("admin_id", user_data.user_id.as_str())
-                .execute();
+        .execute();
 
-            let db_email_or_phone_student: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_phone_student_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
-            if db_email_or_phone_student.len() != 0 {
-                return error_response;
-            }
+    let db_email_or_phone_student: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_phone_student_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
+    if db_email_or_phone_student.len() != 0 {
+        return error_response;
+    }
 
-            let db_email_or_phone_lecturer: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_phone_lecturer_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
+    let db_email_or_phone_lecturer: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_phone_lecturer_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
 
-            if db_email_or_phone_lecturer.len() != 0 {
-                return error_response;
-            }
-            let db_email_or_phone_admin: Vec<EmailOrPhone> = serde_json::from_str(
-                duplicated_phone_admin_query
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap()
-                    .as_str(),
-            )
-            .unwrap();
+    if db_email_or_phone_lecturer.len() != 0 {
+        return error_response;
+    }
+    let db_email_or_phone_admin: Vec<EmailOrPhone> = serde_json::from_str(
+        duplicated_phone_admin_query
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+            .as_str(),
+    )
+    .unwrap();
 
-            if db_email_or_phone_admin.len() != 0 {
-                return error_response;
-            }
-            return None;
+    if db_email_or_phone_admin.len() != 0 {
+        return error_response;
+    }
+    return None;
 }
 
 fn validate_email_and_phone_list(

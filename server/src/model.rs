@@ -117,7 +117,6 @@ impl GeneralResponse {
         }
     }
     pub fn bad_request(message: String) -> GeneralResponse {
-
         let mut head = HeaderMap::new();
         head.append(
             header::CONTENT_TYPE,
@@ -128,8 +127,9 @@ impl GeneralResponse {
             header: head,
             body: BodyMessage {
                 code_status: StatusCode::BAD_REQUEST.as_u16(),
-                message
-            }.to_json()
+                message,
+            }
+            .to_json(),
         }
     }
 }
@@ -148,18 +148,23 @@ pub struct LoginSuccess {
     pub token: Option<String>,
     pub role: Option<Role>,
     pub user_id: Option<String>,
-    pub full_name: Option<String>
+    pub full_name: Option<String>,
 }
 
 impl LoginSuccess {
-    pub fn to_json(token: String, role: Option<Role>, user_id: Option<String>, full_name: Option<String>) -> String {
+    pub fn to_json(
+        token: String,
+        role: Option<Role>,
+        user_id: Option<String>,
+        full_name: Option<String>,
+    ) -> String {
         serde_json::to_string(&LoginSuccess {
             code_status: StatusCode::OK.as_u16(),
             message: String::from("Login successfully!"),
             token: Some(token),
             role,
             user_id,
-            full_name
+            full_name,
         })
         .unwrap()
     }
@@ -190,11 +195,10 @@ pub struct TokenClaims {
     pub exp: usize,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DatabaseResponseError {
     pub code: String,
     pub details: String,
     pub hint: Option<String>,
-    pub message: String
+    pub message: String,
 }
