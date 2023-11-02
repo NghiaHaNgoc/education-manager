@@ -2,9 +2,13 @@ import {Routes , Route, useLocation} from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import HomePage from './pages/HomePage/HomePage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
-import StudentsPage from './pages/StudentsPage/StudentsPage';
+import ListPage from './pages/ListPage/ListPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import MainPage from './pages/MainPage/MainPage';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import PrivateRouter from './components/PrivateRouter/PrivateRouter';
+
 
 function App() {
   
@@ -12,23 +16,33 @@ function App() {
   let location = useLocation();
 
   return (
-    <TransitionGroup>
-      <CSSTransition
-        timeout={duration}
-        key={location.pathname}
-        classNames="page"
-        unmountOnExit        
-      >
-        <Routes location={location}>
-          <Route path='/' element={<HomePage/>} >
-            <Route path='profile' element={<ProfilePage/>}/>
-            <Route path='students' element={<StudentsPage/>}/>
-            <Route index element={<MainPage/>}/>
-          </Route>
-          <Route path='/login' element={<LoginPage/>} />
-        </Routes>
-      </CSSTransition>
-    </TransitionGroup>
+    <>
+      <ToastContainer/>
+      <TransitionGroup>
+        <CSSTransition
+          timeout={duration}
+          key={location.pathname}
+          classNames="page"
+          unmountOnExit        
+        >
+          <Routes location={location}>
+            <Route 
+              path='/' 
+              element={
+                <PrivateRouter>
+                  <HomePage/>
+                </PrivateRouter>
+              } 
+            >
+              <Route path='profile' element={<ProfilePage/>}/>
+              <Route path='list/:type' element={<ListPage/>}/>
+              <Route index element={<MainPage/>}/>
+            </Route>
+            <Route path='/login' element={<LoginPage/>} />
+          </Routes>
+        </CSSTransition>
+      </TransitionGroup>    
+    </>
   )
 }
 

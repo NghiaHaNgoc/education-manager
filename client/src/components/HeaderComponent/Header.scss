@@ -1,0 +1,22 @@
+.header-btn{
+    max-width: 5.333333% !important;
+}
+
+.header-layout{
+    display: flex;
+    justify-content: space-between;
+
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    &__avatar{
+        display: flex;
+        align-items: center;
+
+        &--name{
+            margin-left: 10px;
+        }
+    }
+}

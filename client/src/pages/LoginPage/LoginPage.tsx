@@ -3,11 +3,29 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './login.scss'
 import { loginService } from '../../services/userService';
 import { Account } from '../../Model/userModel';
+import { toast } from 'react-toastify'
+import { toastMSGObject } from '../../utils/utils';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
 
-  const handleLoginForm = async (values : Account) => {
-    const res = await loginService(values);
+  const handleLoginForm = (values : Account) => {
+    loginService(values)
+      .then(res => {
+        if(res['code_status'] === 200){
+          const user = {
+            userId : res['userId'],
+            fullName : res['full_name'],
+            role : res['role'],
+            token : res['token'],
+          }
+          localStorage.setItem('user', JSON.stringify(user))
+          toast.success(res.message , toastMSGObject())
+          navigate('/')
+        }
+      })
+      .catch(error => toast.error('Username or Password is wrong' , toastMSGObject()))
   }
 
   return (

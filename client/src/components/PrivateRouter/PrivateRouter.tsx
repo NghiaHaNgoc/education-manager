@@ -2,10 +2,9 @@ import { Navigate } from "react-router-dom";
 import { ReactNode } from 'react';
 
 export default function PrivateRouter({children} : {children : ReactNode}) {
-
-    const dataLogin = '';
+    const user = JSON.parse(localStorage.getItem('user') as string);
   
-    if (dataLogin) {
+    if (user?.token) {
         return children;
     }
     return <Navigate to={"/login"}/>
