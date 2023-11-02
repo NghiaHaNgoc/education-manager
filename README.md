@@ -89,6 +89,26 @@
 - `class_code` is required.
 - `description` is optional.
 
+### End point `admin/add-students-to-class`
+- Method: `POST`
+- Body:
+```json
+{
+    "class": "10A01",
+    "students": ["ST00001", "ST00002"]
+}
+```
+
+### End point `admin/add-lecturers-to-class`
+- Method: `POST`
+- Body:
+```json
+{
+    "class": "10A01",
+    "students": ["LT00001", "LT00002"]
+}
+```
+
 ### End point `admin/update-class/:class_code`
 - Method: `POST`
 - Body:
