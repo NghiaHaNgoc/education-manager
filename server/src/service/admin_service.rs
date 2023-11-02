@@ -6,4 +6,5 @@ pub mod list_lecturer;
 pub mod list_student;
 pub mod remove_class;
 pub mod remove_user;
+pub mod student_detail;
 pub mod update_class;

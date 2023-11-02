@@ -4,14 +4,14 @@ use axum::middleware;
 use axum::routing::{get, post};
 use axum::Router;
 use postgrest::Postgrest;
-use tokio::sync::Mutex;
 use tower_http::cors::CorsLayer;
 
 use crate::layer::{admin_layer, extract_authorization};
 use crate::service::admin_service::list_lecturer::list_lecturer;
 use crate::service::admin_service::list_student::list_student;
 use crate::service::admin_service::{
-    self, class_detail, create_class, create_user, list_class, remove_user, update_class,
+    self, class_detail, create_class, create_user, list_class, remove_user, student_detail,
+    update_class,
 };
 use crate::service::general_service::profile::profile;
 use crate::service::general_service::{self, update_profile};
@@ -52,6 +52,10 @@ fn admin_router(database: Arc<Postgrest>) -> Router {
             .route("/students-list", get(list_student))
             .route("/lecturers-list", get(list_lecturer))
             .route("/classes-list", get(list_class::list_class))
+            .route(
+                "/student-detail/:student_id",
+                get(student_detail::student_detail),
+            )
             .route(
                 "/class-detail/:current_class_code",
                 get(class_detail::class_detail),
