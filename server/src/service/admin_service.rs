@@ -1,6 +1,7 @@
 pub mod class_detail;
 pub mod create_class;
 pub mod create_user;
+pub mod lecturer_detail;
 pub mod list_class;
 pub mod list_lecturer;
 pub mod list_student;
