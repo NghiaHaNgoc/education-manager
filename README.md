@@ -15,8 +15,8 @@
  - Body:
  ```json
  {
- "username": "your username",
- "password": "your password"
+    "username": "your username",
+    "password": "your password"
  }
 ```
 
@@ -30,7 +30,8 @@
  Example: 
  ```json
  {
- "full_name": "Nghia"
+    "full_name": "Nghia",
+    "email": "nghia@example.com"
  }
  ```
 
@@ -48,6 +49,19 @@
 ### End point `admin/classes-list`
  - Method: `GET`
  - Default optional params: `page_number=1`, `classes_per_page=24`
+
+
+### End point `admin/student-detail/:student_id`
+ - Method: `GET`
+ - `student_id` in path is required
+
+### End point `admin/lecturer-detail/:lecturer_id`
+ - Method: `GET`
+ - `lecturer_id` in path is required
+
+### End point `admin/class-detail/:class_code`
+ - Method: `GET`
+ - `class_id` in path is required
 
 ### End point `admin/create-user`
  - Method: `POST`
@@ -75,6 +89,18 @@
 - `class_code` is required.
 - `description` is optional.
 
+### End point `admin/update-class/:class_code`
+- Method: `POST`
+- Body:
+```json
+{
+    "class_code": "new class code",
+    "description": "new description"
+}
+```
+- `class_code` in path is required
+- `class_code` and `description` in body are optional
+
 ### End point `admin/remove-user`
  - Method: `POST`
  - Body:  
@@ -84,3 +110,13 @@
 }
  ```
 - `user_id` is required.
+
+### End point `admin/remove-class`
+ - Method: `POST`
+ - Body:  
+ ```json
+{
+    "class_code": "20A01"
+}
+ ```
+- `class_code` is required.
