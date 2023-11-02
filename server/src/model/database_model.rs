@@ -31,8 +31,8 @@ pub enum Gender {
 impl fmt::Display for Gender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Gender::Male => write!(f, "MALE"),
-            Gender::Female => write!(f, "FEMALE"),
+            Gender::Male => write!(f, "Male"),
+            Gender::Female => write!(f, "Female"),
         }
     }
 }
@@ -104,4 +104,16 @@ pub struct Class {
     pub id: Option<u32>,
     pub class_code: Option<String>,
     pub description: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct StudentInClass {
+    pub student: String,
+    pub class: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LecturerInClass {
+    pub lecturer: String,
+    pub class: String,
 }

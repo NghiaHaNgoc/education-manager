@@ -10,8 +10,8 @@ use crate::layer::{admin_layer, extract_authorization};
 use crate::service::admin_service::list_lecturer::list_lecturer;
 use crate::service::admin_service::list_student::list_student;
 use crate::service::admin_service::{
-    class_detail, create_class, create_user, lecturer_detail, list_class, remove_user,
-    student_detail, update_class,
+    add_lecturers_to_class, add_students_to_class, class_detail, create_class, create_user,
+    lecturer_detail, list_class, remove_user, student_detail, update_class,
 };
 use crate::service::general_service::profile::profile;
 use crate::service::general_service::update_profile;
@@ -66,6 +66,14 @@ fn admin_router(database: Arc<Postgrest>) -> Router {
             )
             .route("/create-user", post(create_user::create_user))
             .route("/create-class", post(create_class::create_class))
+            .route(
+                "/add-students-to-class",
+                post(add_students_to_class::add_students_to_class),
+            )
+            .route(
+                "/add-lecturers-to-class",
+                post(add_lecturers_to_class::add_lecturers_to_class),
+            )
             .route(
                 "/update-class/:current_class_code",
                 post(update_class::update_class),

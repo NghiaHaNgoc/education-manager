@@ -1,3 +1,5 @@
+pub mod add_lecturers_to_class;
+pub mod add_students_to_class;
 pub mod class_detail;
 pub mod create_class;
 pub mod create_user;
