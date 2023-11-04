@@ -11,7 +11,8 @@ use crate::service::admin_service::list_lecturer::list_lecturer;
 use crate::service::admin_service::list_student::list_student;
 use crate::service::admin_service::{
     add_lecturers_to_class, add_students_to_class, class_detail, create_class, create_user,
-    lecturer_detail, list_class, remove_user, student_detail, update_class,
+    lecturer_detail, list_class, remove_lecturers_from_class, remove_students_from_class,
+    remove_user, student_detail, update_class,
 };
 use crate::service::general_service::profile::profile;
 use crate::service::general_service::update_profile;
@@ -79,6 +80,14 @@ fn admin_router(database: Arc<Postgrest>) -> Router {
                 post(update_class::update_class),
             )
             .route("/remove-user", post(remove_user::remove_user))
+            .route(
+                "/remove-students-from-class",
+                post(remove_students_from_class::remove_students_from_class),
+            )
+            .route(
+                "/remove-lecturers-from-class",
+                post(remove_lecturers_from_class::remove_lecturers_from_class),
+            )
             .with_state(database.clone())
             .route_layer(middleware::from_fn(admin_layer)),
     )
