@@ -140,3 +140,25 @@
 }
  ```
 - `class_code` is required.
+
+### End point `admin/remove-students-from-class`
+ - Method: `POST`
+ - Body:  
+ ```json
+{
+    "class": "20A01",
+    "students": ["ST00001", "ST00002"]
+}
+ ```
+- `class` and `students` are required.
+
+### End point `admin/remove-lecturers-from-class`
+ - Method: `POST`
+ - Body:  
+ ```json
+{
+    "class": "20A01",
+    "lecturers": ["LT00001", "LT00002"]
+}
+ ```
+- `class` and `lecturers` are required.
