@@ -6,7 +6,7 @@ use axum::Router;
 use postgrest::Postgrest;
 use tower_http::cors::CorsLayer;
 
-use crate::layer::{admin_layer, extract_authorization};
+use crate::layer::{self, admin_layer, extract_authorization};
 use crate::service::admin_service::list_lecturer::list_lecturer;
 use crate::service::admin_service::list_student::list_student;
 use crate::service::admin_service::{
@@ -17,6 +17,7 @@ use crate::service::admin_service::{
 use crate::service::general_service::profile::profile;
 use crate::service::general_service::update_profile;
 use crate::service::public_service::login;
+use crate::service::student_service;
 
 pub fn global_router(database: Arc<Postgrest>) -> Router {
     let router = Router::new()
@@ -40,8 +41,9 @@ fn authentication_router(database: Arc<Postgrest>) -> Router {
         .route("/update-profile", post(update_profile::update_profile))
         .with_state(database.clone())
         .merge(admin_router(database.clone()))
+        .merge(student_router(database.clone()))
         .route_layer(middleware::from_fn_with_state(
-            database.clone(),
+            database,
             extract_authorization,
         ))
 }
@@ -88,7 +90,17 @@ fn admin_router(database: Arc<Postgrest>) -> Router {
                 "/remove-lecturers-from-class",
                 post(remove_lecturers_from_class::remove_lecturers_from_class),
             )
-            .with_state(database.clone())
+            .with_state(database)
             .route_layer(middleware::from_fn(admin_layer)),
+    )
+}
+
+fn student_router(database: Arc<Postgrest>) -> Router {
+    Router::new().nest(
+        "/student",
+        Router::new()
+        .route("/class-detail/:current_class_code", get(student_service::class_detail::class_detail))
+            .with_state(database)
+            .route_layer(middleware::from_fn(layer::student_layer)),
     )
 }
