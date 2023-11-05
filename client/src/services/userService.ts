@@ -1,14 +1,7 @@
 import axios from "axios";
 import { Account, User } from "../Model/userModel";
+import { config } from ".";
 const API_URL = import.meta.env.VITE_API_URL
-
-export const accessToken = JSON.parse(localStorage.getItem('user') as string)?.token
-const config = {
-    headers : {
-        "Content-Type" : "application/json",
-        "Authorization" : `Bearer ${accessToken}`
-    }
-}
 
 export const loginService = async (data : Account) => {
     const res = await axios.post(`${API_URL}/login`, data)

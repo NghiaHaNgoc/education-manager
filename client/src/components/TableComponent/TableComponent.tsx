@@ -125,7 +125,7 @@ export default function TableComponent(props : propTable) {
         )
     }
 
-    const columns = [
+    const columnsUser = [
         {
             title: 'Id',
             dataIndex: typeList === 'STUDENTS' ? 'student_id' : 'lecturer_id',
@@ -186,7 +186,7 @@ export default function TableComponent(props : propTable) {
                     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                 },
             }}
-            columns={columns}
+            columns={columnsUser}
             dataSource={listData}
             //onRow={onRow}
             bordered={true}

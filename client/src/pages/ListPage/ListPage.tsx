@@ -5,9 +5,11 @@ import {toast} from 'react-toastify'
 import { toastMSGObject } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import TableComponent from "../../components/TableComponent/TableComponent";
-import { Modal , Form } from "antd";
+import { Modal , Form} from "antd";
 import FormComponent from "../../components/FormComponent/FormComponent";
 import { Role, Student } from "../../Model/userModel";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
+import ClassesPage from "./ClassesPage/ClassesPage";
 
 export default function ListPage() {
 
@@ -20,9 +22,10 @@ export default function ListPage() {
   const [isFormEdit , setIsFormEdit] = useState(false);
   
   const object = useMemo(() => {
-    return typeList === 'students' ? 'student' : 'lecturer'
+    return typeList === 'students' ? 'student' : typeList === 'classes' ? 'class' : 'lecturer'
   },[typeList])
 
+  // get list objects : students , classes , lecturers
   useEffect(() => {
     getObjectsService(typeList || 'students')
       .then(res => {
@@ -31,6 +34,7 @@ export default function ListPage() {
       })
       .catch(resFail => {
         toast.error(resFail.response.data.message , toastMSGObject())
+        localStorage.removeItem('user');
         navigate('/login')
       })
   },[])
@@ -50,21 +54,33 @@ export default function ListPage() {
 
   return (
     <>
-      { isLoading ? (
-        <LoadingComponent/>
+      {typeList === 'students' || typeList === 'lecturers' || typeList === 'classes' ? (
+        <>
+          { isLoading ? (
+            <LoadingComponent/>
+          ) : (
+            <>
+              {typeList === 'classes' ? (
+                <ClassesPage listClasses={listObjects}/>
+              ) : (
+                <div>
+                  <div>
+                    <button onClick={() => setIsOpenModal(true)}>
+                      {`Add new ${object}`}
+                    </button>
+                  </div>
+                  <TableComponent
+                    typeList={typeList?.toUpperCase()}
+                    listData={listObjects}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </>
       ) : (
-        <div>
-          <div>
-            <button onClick={() => setIsOpenModal(true)}>
-              {`Add new ${object}`}
-            </button>
-          </div>
-          <TableComponent
-            typeList={typeList?.toUpperCase()}
-            listData={listObjects}
-          />
-        </div>
-      )}  
+        <NotFoundPage/>
+      )}
       <Modal 
         width={400} 
         title={isFormEdit ? `Edit Information ${object}` : `Add new ${object}`} 
@@ -78,7 +94,7 @@ export default function ListPage() {
           typeList={typeList?.toUpperCase()}
           handleCreate={handleCreateStudent}
         />
-      </Modal>  
+      </Modal> 
     </>
   )
 }

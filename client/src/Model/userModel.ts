@@ -14,7 +14,8 @@ export interface User {
 export enum Role {
     student = 'Student',
     lecturer = 'Lecturer',
-    admin = 'Admin'
+    admin = 'Admin',
+    class = 'Class'
 }
 
 export interface Student extends User{

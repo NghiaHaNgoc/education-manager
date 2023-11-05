@@ -8,6 +8,7 @@ import MainPage from './pages/MainPage/MainPage';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import PrivateRouter from './components/PrivateRouter/PrivateRouter';
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
               <Route index element={<MainPage/>}/>
             </Route>
             <Route path='/login' element={<LoginPage/>} />
+            <Route path='/*' element={<NotFoundPage/>}/>
           </Routes>
         </CSSTransition>
       </TransitionGroup>    
