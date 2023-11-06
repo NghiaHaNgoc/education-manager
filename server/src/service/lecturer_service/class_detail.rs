@@ -1,3 +1,4 @@
+
 use std::sync::Arc;
 
 use axum::{
@@ -52,8 +53,8 @@ pub async fn class_detail(
             .into_iter()
             .filter(|x| {
                 let user_id = Some(user_data.user_id.clone());
-                for x in &x.student_in_class {
-                    if x.student.student_id.eq(&user_id) {
+                for x in &x.lecturer_in_class {
+                    if x.lecturer.lecturer_id.eq(&user_id) {
                         return true;
                     }
                 }

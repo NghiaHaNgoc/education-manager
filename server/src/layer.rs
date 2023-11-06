@@ -111,7 +111,7 @@ pub async fn student_layer<B>(
         GeneralResponse::unauthorized(None).into_response()
     }
 }
-pub async fn teacher_layer<B>(
+pub async fn lecturer_layer<B>(
     Extension(user_claims): Extension<TokenClaims>,
     req: Request<B>,
     next: Next<B>,

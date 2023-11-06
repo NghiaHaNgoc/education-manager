@@ -17,7 +17,7 @@ use crate::service::admin_service::{
 use crate::service::general_service::profile::profile;
 use crate::service::general_service::update_profile;
 use crate::service::public_service::login;
-use crate::service::student_service;
+use crate::service::{student_service, lecturer_service};
 
 pub fn global_router(database: Arc<Postgrest>) -> Router {
     let router = Router::new()
@@ -41,6 +41,7 @@ fn authentication_router(database: Arc<Postgrest>) -> Router {
         .route("/update-profile", post(update_profile::update_profile))
         .with_state(database.clone())
         .merge(admin_router(database.clone()))
+        .merge(lecturer_router(database.clone()))
         .merge(student_router(database.clone()))
         .route_layer(middleware::from_fn_with_state(
             database,
@@ -92,6 +93,16 @@ fn admin_router(database: Arc<Postgrest>) -> Router {
             )
             .with_state(database)
             .route_layer(middleware::from_fn(admin_layer)),
+    )
+}
+
+fn lecturer_router(database: Arc<Postgrest>) -> Router {
+    Router::new().nest(
+        "/lecturer",
+        Router::new()
+        .route("/class-detail/:current_class_code", get(lecturer_service::class_detail::class_detail))
+            .with_state(database)
+            .route_layer(middleware::from_fn(layer::lecturer_layer)),
     )
 }
 
