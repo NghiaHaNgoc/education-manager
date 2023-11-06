@@ -61,7 +61,7 @@
 
 ### End point `admin/class-detail/:class_code`
  - Method: `GET`
- - `class_id` in path is required
+ - `class_code` in path is required
 
 ### End point `admin/create-user`
  - Method: `POST`
@@ -162,3 +162,20 @@
 }
  ```
 - `class` and `lecturers` are required.
+
+## Lecturer
+
+- End point for lecturer role
+
+### End point `lecturer/class-detail/:class_code`
+ - Method: `GET`
+ - `class_code` in path is required
+
+## Student
+
+- End point for student role
+
+### End point `student/class-detail/:class_code`
+ - Method: `GET`
+ - `class_code` in path is required
+
