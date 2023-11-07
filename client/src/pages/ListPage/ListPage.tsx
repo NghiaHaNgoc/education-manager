@@ -25,6 +25,8 @@ export default function ListPage() {
     return typeList === 'students' ? 'student' : typeList === 'classes' ? 'class' : 'lecturer'
   },[typeList])
 
+  console.log(JSON.parse(localStorage.getItem('user') as string)?.token)
+
   // get list objects : students , classes , lecturers
   useEffect(() => {
     getObjectsService(typeList || 'students')

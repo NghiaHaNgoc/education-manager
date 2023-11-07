@@ -15,7 +15,7 @@ export default function LoginPage() {
       .then(res => {
         if(res['code_status'] === 200){
           const user = {
-            userId : res['userId'],
+            userId : res['user_id'],
             fullName : res['full_name'],
             role : res['role'],
             token : res['token'],

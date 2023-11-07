@@ -9,11 +9,22 @@ export const loginService = async (data : Account) => {
 }
 
 export const getObjectsService = async (typeList : string) => {
-    const res = await axios.get(`${API_URL}/admin/${typeList}-list`, config)
+    const res = await axios.get(`${API_URL}/admin/${typeList}-list`, config())
     return res.data
 }
 
 export const createUserService = async (data : User) => {
-    const res = await axios.post(`${API_URL}/admin/create-user`, data , config)
+    const res = await axios.post(`${API_URL}/admin/create-user`, data , config())
     return res.data
 }
+
+export const getProfileUser = async () => {
+    const res = await axios.get(`${API_URL}/profile` , config())
+    return res.data
+}
+
+export const updateProfileUser = async (data : any) => {
+    const res = await axios.post(`${API_URL}/profile` , data , config())
+    return res.data
+}
+
