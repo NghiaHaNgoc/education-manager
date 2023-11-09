@@ -182,8 +182,8 @@ export default function ClassesPage(props : propsClasses) {
                 header={
                   <div className="header-list">
                     <div className="header-list__title">
-                      <span>Student_id</span>
-                      <span>Full_name</span>
+                      <span>Student id</span>
+                      <span>Full name</span>
                     </div>
                     <div className="header-list__total">Total : {students.length} students</div>
                   </div>

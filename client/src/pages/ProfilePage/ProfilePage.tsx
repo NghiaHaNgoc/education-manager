@@ -231,7 +231,7 @@ export default function ProfilePage() {
               }
             />
           </div>
-          <div className={`form-group address-group`}>Address:
+          <div className={`form-group address-group`}>In class:
             <div>{userProfile?.student_in_class?.class?.class_code}</div>
           </div>
 
