@@ -16,7 +16,12 @@ export default function ProfilePage() {
     email: '',
     phone: '',
     address: '',
-    student_in_class: {}
+    student_in_class: {
+      ["class"]: {
+        class_code: '',
+        description: ''
+      }
+    }
   });
 
   function isValidPhoneNumer(phoneNumber: string){
@@ -226,8 +231,8 @@ export default function ProfilePage() {
               }
             />
           </div>
-          <div className="form-group address-group">Address:
-            <div></div>
+          <div className={`form-group address-group`}>Address:
+            <div>{userProfile?.student_in_class?.class?.class_code}</div>
           </div>
 
         </div>

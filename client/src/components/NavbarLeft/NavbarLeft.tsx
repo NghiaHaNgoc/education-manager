@@ -32,7 +32,7 @@ export default function NavbarLeft() {
         console.log(items)
         switch (role) {
             case 'Admin':
-                return items.filter(item => item?.key !== 'profile')
+                return items
             case 'Student':
             case 'Lecturer':
                 return items.filter(item => item?.key !== 'list')
