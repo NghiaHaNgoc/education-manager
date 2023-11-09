@@ -1,0 +1,22 @@
+.header-list{
+    display: flex;
+    justify-content: space-between;
+
+    &__title{
+        display: flex;
+
+        span{
+            margin-right: 20px;
+        }
+    }
+}
+
+.list-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__info{
+        display: flex;
+    }
+}

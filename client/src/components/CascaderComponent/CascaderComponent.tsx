@@ -31,7 +31,11 @@ export default function CascaderComponent(props : propsCascader) {
     // ];
 
     const onChange = (value: any, selectedOptions: Option[]) => {
-        setCodeClass(value[0])
+        if(value){
+            setCodeClass(value[0]);
+        }else{
+            setCodeClass('');
+        }
         console.log(value, selectedOptions);
     };
 

@@ -14,7 +14,7 @@ export default function FormComponent(props : propsForm) {
         form ,
         isFormEdit ,
         typeList ,
-        handleCreate
+        handleCreate 
     } = props
 
     return (

@@ -1,5 +1,5 @@
 import { useState ,useRef} from 'react'
-import { Button, Input, InputRef, Space, Table } from "antd";
+import { Button, Input, InputRef, Popconfirm, Space, Table } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import Highlighter from 'react-highlight-words'
 import { FilterConfirmProps } from "antd/es/table/interface";
@@ -8,13 +8,21 @@ interface propTable {
     typeList ?: string
     listData : any[],
     pageSize ?: number,
+    onRow : any,
+    setIsOpenModal ?: any
+    setIsFormEdit ?: any
+    handleDeleteStudent ?: any
 }
 
 export default function TableComponent(props : propTable) {
     const {
         typeList = '',
         listData = [],
-        pageSize = 6
+        pageSize = 6,
+        onRow,
+        setIsOpenModal,
+        setIsFormEdit,
+        handleDeleteStudent
     } = props
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -112,14 +120,28 @@ export default function TableComponent(props : propTable) {
             ),
     });
 
+    const handleShowInforDetail = () => {
+        setIsFormEdit(true);
+        setIsOpenModal(true);
+    }
+
     const renderAction = () => {
         return (
             <div>
-                <DeleteOutlined
-                    style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }}
-                />
+                <Popconfirm
+                    title="Delete the task"
+                    description={`Are you sure to delete this ${typeList}?`}
+                    onConfirm={handleDeleteStudent}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <DeleteOutlined
+                        style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }}
+                    />
+                </Popconfirm>
                 <EditOutlined
                     style={{ color: 'orange', fontSize: '30px', cursor: 'pointer' }}
+                    onClick={handleShowInforDetail}
                 />
             </div>
         )
@@ -188,7 +210,7 @@ export default function TableComponent(props : propTable) {
             }}
             columns={columnsUser}
             dataSource={listData}
-            //onRow={onRow}
+            onRow={onRow}
             bordered={true}
             pagination={{
                 pageSize,

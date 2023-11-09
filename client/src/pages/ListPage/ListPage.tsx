@@ -1,15 +1,16 @@
 import LoadingComponent from "../../components/LoadingComponent/LoadingComponent";
 import { useState , useEffect , useMemo} from 'react'
-import { createUserService, getObjectsService} from "../../services/userService";
+import { createUserService, getObjectDetailService, getObjectsService, removeUser} from "../../services/userService";
 import {toast} from 'react-toastify'
 import { toastMSGObject } from "../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import TableComponent from "../../components/TableComponent/TableComponent";
-import { Modal , Form} from "antd";
+import { Modal , Form, Descriptions} from "antd";
 import FormComponent from "../../components/FormComponent/FormComponent";
 import { Role, Student } from "../../Model/userModel";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 import ClassesPage from "./ClassesPage/ClassesPage";
+import type { DescriptionsProps } from 'antd';
 
 export default function ListPage() {
 
@@ -20,12 +21,20 @@ export default function ListPage() {
   const [isOpenModal , setIsOpenModal] = useState(false);
   const [form] = Form.useForm();
   const [isFormEdit , setIsFormEdit] = useState(false);
-  
+  const [rowSelected , setRowSelected] = useState<any>({});
+  const [detailObject , setDetailObject] = useState<any>({});
+  const [isUpdateList , setIsUpdateList] = useState(true);
+
   const object = useMemo(() => {
     return typeList === 'students' ? 'student' : typeList === 'classes' ? 'class' : 'lecturer'
   },[typeList])
 
-  console.log(JSON.parse(localStorage.getItem('user') as string)?.token)
+  console.log(rowSelected['student_id'])
+
+  const handleCancelModal = () => {
+    setIsOpenModal(false);
+    form.resetFields();
+  }
 
   // get list objects : students , classes , lecturers
   useEffect(() => {
@@ -39,19 +48,66 @@ export default function ListPage() {
         localStorage.removeItem('user');
         navigate('/login')
       })
-  },[])
+  },[isUpdateList])
 
-  const handleCancelModal = () => {
-    setIsOpenModal(false);
-    form.resetFields();
+  //get object detail 
+  useEffect(() => {
+    if(isFormEdit && isOpenModal){
+      getObjectDetailService(object , rowSelected[`${object}_id`] )
+        .then(res => {
+          setDetailObject(res);
+        })
+    }
+  },[isOpenModal])
+
+  const mapFieldClassOfObj = (fieldObjInClass : any) => {
+    if(object === 'student'){
+      return fieldObjInClass.class['class_code'] || 'Not class'
+    }else{
+      return fieldObjInClass.map((obj : any) => {
+        return obj.class['class_code']
+      }).join(', ') || 'Not class'
+    }
+
   }
+
+  const mapObj = () : DescriptionsProps['items'] => {
+    let items = [];
+    let i = 0;
+    for (const key in detailObject) {
+      if (detailObject.hasOwnProperty(key)) {
+        const value = key===`${object}_in_class` ? mapFieldClassOfObj(detailObject[key]) : detailObject[key];
+        items.push({
+          key : ++i,
+          label : key,
+          children : value
+        })
+      }
+    }
+    return items
+  }
+
+  // create new user
 
   const handleCreateStudent = (valuesInput : Student) => {
     createUserService({...valuesInput, role : Role[object]})
       .then(() => {
         toast.success('Add new student successfully!' , toastMSGObject())
-        handleCancelModal();        
+        handleCancelModal();  
+        setIsUpdateList(!isUpdateList)      
       })
+  }
+
+  // delete user
+  const handleDeleteStudent = () => {
+    removeUser({
+      user_id : rowSelected[`${object}_id`]
+    }).then(res => {
+      if(res['code_status'] === 200){
+        setIsUpdateList(!isUpdateList)
+        toast.success(res.message, toastMSGObject());
+      }
+    })
   }
 
   return (
@@ -63,7 +119,11 @@ export default function ListPage() {
           ) : (
             <>
               {typeList === 'classes' ? (
-                <ClassesPage listClasses={listObjects}/>
+                <ClassesPage 
+                  listClasses={listObjects}
+                  isUpdateClass={isUpdateList}
+                  setIsUpdateClass={setIsUpdateList}
+                />
               ) : (
                 <div>
                   <div>
@@ -74,6 +134,16 @@ export default function ListPage() {
                   <TableComponent
                     typeList={typeList?.toUpperCase()}
                     listData={listObjects}
+                    onRow={(record : any) => {
+                      return {
+                        onClick : (event : any) => {
+                            setRowSelected(record)
+                        }
+                      }
+                    }}
+                    setIsOpenModal={setIsOpenModal}
+                    setIsFormEdit={setIsFormEdit}
+                    handleDeleteStudent={handleDeleteStudent}
                   />
                 </div>
               )}
@@ -84,18 +154,22 @@ export default function ListPage() {
         <NotFoundPage/>
       )}
       <Modal 
-        width={400} 
-        title={isFormEdit ? `Edit Information ${object}` : `Add new ${object}`} 
+        width={isFormEdit ? 1000 : 400} 
+        title={isFormEdit ? `Information ${object}` : `Add new ${object}`} 
         open={isOpenModal} 
         footer={null} 
         onCancel={handleCancelModal}
       >
-        <FormComponent 
-          form={form} 
-          isFormEdit={isFormEdit} 
-          typeList={typeList?.toUpperCase()}
-          handleCreate={handleCreateStudent}
-        />
+        {isFormEdit ? (
+          <Descriptions bordered items={detailObject && mapObj()} />
+        ) : (
+          <FormComponent 
+            form={form} 
+            isFormEdit={isFormEdit} 
+            typeList={typeList?.toUpperCase()}
+            handleCreate={handleCreateStudent}
+          />        
+        )}
       </Modal> 
     </>
   )
