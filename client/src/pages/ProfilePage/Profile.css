@@ -1,0 +1,198 @@
+#ProfilePage .modal.visible {
+    display: block;
+    /* Các thuộc tính CSS khác cho modal */
+  }
+
+#ProfilePage .modal {
+    display: none;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+  }
+#ProfilePage .modal-content {
+    position: absolute;
+    top: 50%;
+    height: 230px;
+    width: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+
+ 
+#ProfilePage .form-group.password-group button {
+    background-color: transparent;
+    border: 2px solid #007bff; /* Màu và độ dày đường viền */
+    color: #007bff; /* Màu văn bản */
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng hover */
+  }
+  
+  #ProfilePage .form-group.password-group button:hover {
+    background-color: #007bff; /* Màu nền khi hover */
+    color: white; /* Màu văn bản khi hover */
+  }
+
+  #ProfilePage .close {
+position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  width: 20px; /* Chiều rộng */
+  height: 20px; /* Chiều cao */
+  background-color: red; /* Màu nền */
+  border-radius: 50%; /* Hình dạng tròn */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px; /* Kích thước biểu tượng */
+  color: white; /* Màu sắc biểu tượng */
+  }
+  
+  #ProfilePage  .close:hover {
+    color: red; /* Màu chữ khi di chuột qua (hover) */
+    background-color: white;
+  }
+
+  #ProfilePage .pw-input{
+    width: 100%;
+    margin-top: 25px;
+    height: 100%;
+    border-radius: 10px;
+    border-block-width: 2px;
+}  
+
+#ProfilePage .modal-content h4 {
+    text-align: center; /* Căn giữa theo chiều ngang */
+    color: #007bff;
+  }
+  #ProfilePage .pw-button{
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    background-color: transparent;
+    border: 2px solid #007bff; /* Màu và độ dày đường viền */
+    color: #007bff; /* Màu văn bản */
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng hover */
+}
+
+#ProfilePage .pw-button:hover {
+    background-color: #007bff; /* Màu nền khi hover */
+    color: white; /* Màu văn bản khi hover */
+  }
+
+  #ProfilePage .layout {
+    background: #ffffff;
+    margin-left: 15px;
+    border: 1px solid #d9d9d9;
+    box-sizing: border-box;
+    border-radius: 16px;
+    height: 40px;
+    width: 80%;
+    padding: 5px 20px;
+    transition: 0.2s all;
+    margin-bottom: 10px;
+  }
+ 
+  #ProfilePage .birth-layout{
+    margin-left: 42px;
+}
+
+#ProfilePage .gender-layout{
+    margin-left: 26px;
+}
+
+#ProfilePage .password-layout{
+    margin-top: 25px;
+    margin-left: 50px;
+}
+
+#ProfilePage .phone-layout{
+    margin-left: 26px;
+}
+
+#ProfilePage .email-layout{
+    margin-left: 33px;
+}
+
+#ProfilePage .row{
+    margin-top: 35px;
+}
+
+#ProfilePage .birth-group{
+    margin-top: 30px;
+}
+
+#ProfilePage .gender-group{
+    margin-top: 30px;
+}
+
+#ProfilePage .password-group{
+    margin-top: 30px;
+}
+
+#ProfilePage .email-group{
+    margin-top: 8px;
+}
+
+#ProfilePage .phone-group{
+    margin-top: 30px;
+}
+
+#ProfilePage .address-group{
+    margin-top: 30px;
+}
+
+#ProfilePage .custom-radio{
+    margin-left: 25px;
+}
+#ProfilePage .label{
+    margin-left: 5px;
+}
+#ProfilePage .form-group{
+    font-size: 15px;
+}
+#ProfilePage .update-button{
+    display: block;
+    margin-top: 70px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+#ProfilePage .update-button button:hover{
+    color: red;
+    background-color: white;
+}
+#ProfilePage .success-message {
+    background-color: #4CAF50; /* Màu nền */
+    color: white; /* Màu chữ */
+    padding: 10px; /* Khoảng cách nội dung */
+    text-align: center; /* Căn giữa nội dung */
+    position: fixed; /* Đặt thông báo ở cố định */
+    bottom: 10px; /* Khoảng cách phía dưới */
+    left: 50%; /* Căn giữa ngang */
+    transform: translateX(-50%); /* Dịch chuyển 50% chiều ngang để căn giữa hoàn toàn */
+    z-index: 1; /* Độ ưu tiên trên các phần tử khác */
+    display: none; /* Ẩn thông báo ban đầu */
+  }
+
+  #ProfilePage  .form-group-title {
+ 
+    font-size: 13px;
+    color: #007bff;
+  }

@@ -29,7 +29,7 @@ export const getProfileUser = async () => {
 }
 
 export const updateProfileUser = async (data : any) => {
-    const res = await axios.post(`${API_URL}/profile` , data , config())
+    const res = await axios.post(`${API_URL}/update-profile` , JSON.stringify(data) , config())
     return res.data
 }
 

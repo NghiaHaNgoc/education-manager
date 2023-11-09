@@ -44,11 +44,13 @@
 
 ### End point `admin/student-not-in-any-class`
  - Method: `GET`
- - Default optional params: `page_number=1`, `students_per_page=24`
 
 ### End point `admin/lecturers-list`
  - Method: `GET`
  - Default optional params: `page_number=1`, `lecturers_per_page=24`
+
+### End point `admin/lecturer-not-in-any-class`
+ - Method: `GET`
 
 ### End point `admin/classes-list`
  - Method: `GET`
