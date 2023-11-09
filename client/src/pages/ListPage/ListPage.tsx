@@ -131,7 +131,7 @@ export default function ListPage() {
                 <div>
                   <div className="header-list" style={{margin:"15px 0"}}>
                     <div className="header-list__title">{`Total ${typeList} : ${totalObj}`}</div>
-                    <button onClick={() => setIsOpenModal(true)}>
+                    <button onClick={() => setIsOpenModal(true)} style={{color:"#ffff"}}>
                       <PlusOutlined style={{marginRight:7}} />
                       {`Add new ${object}`}
                     </button>

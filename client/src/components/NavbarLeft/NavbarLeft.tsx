@@ -6,6 +6,7 @@ import { MenuItem, getItem } from "../../utils/utils";
 export default function NavbarLeft() {
     const navigate = useNavigate();
     const location = useLocation();
+    const role = JSON.parse(localStorage.getItem('user') as string)?.role
 
     const handleConvertPage = ({key} : {key : string}) => {
         if(key === 'logout'){
@@ -27,6 +28,18 @@ export default function NavbarLeft() {
         getItem('Logout', 'logout', <LogoutOutlined />),      
     ]
 
+    const customeItemByAuthorization = () => {
+        switch (role) {
+            case 'Admin':
+                return items.filter(item => item?.key !== 'profile')
+            case 'Student':
+            case 'Lecturer':
+                return items.filter(item => item?.key === 'profile')
+            default:
+                break;
+        }
+    }
+
     return (
         <div>
             <div>Menu</div>
@@ -35,7 +48,7 @@ export default function NavbarLeft() {
                 mode="inline"
                 defaultSelectedKeys={[location.pathname.substring(1)]}
                 onClick={handleConvertPage}
-                items={items}
+                items={customeItemByAuthorization()}
             />
         </div>
     )
