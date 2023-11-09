@@ -63,7 +63,7 @@ export default function TransferComponent(props : propsTransfer) {
                 width: 300,
                 height: 300,
             }}
-            titles={[`Available ${keyTab}s`, `${keyTab}s in class`]}
+            titles={[`${keyTab}s not class`, `${keyTab}s in class`]}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
             onChange={onChange}

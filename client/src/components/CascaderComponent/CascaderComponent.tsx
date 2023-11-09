@@ -52,6 +52,9 @@ export default function CascaderComponent(props : propsCascader) {
             placeholder={placeholder}
             showSearch={{ filter }}
             onSearch={(value) => console.log(value)}
+            bordered
+            allowClear
+            notFoundContent={'Not found class code'}
         />
         
     )

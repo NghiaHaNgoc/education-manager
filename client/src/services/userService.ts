@@ -38,8 +38,8 @@ export const removeUser = async (data : any) => {
     return res.data
 }
 
-export const getStudentNotClassUser = async () => {
-    const res = await axios.get(`${API_URL}/admin/student-not-in-any-class` , config())
+export const getObjectNotClass = async (object : string) => {
+    const res = await axios.get(`${API_URL}/admin/${object}-not-in-any-class` , config())
     return res.data
 }
 

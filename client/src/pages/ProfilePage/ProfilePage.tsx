@@ -18,10 +18,11 @@ export default function ProfilePage() {
     address: '',
   });
 
-function isValidPhoneNumer(phoneNumber: string){
-  const phoneRegex = /^[0-9]{10,11}$/;
-  return phoneRegex.test(phoneNumber);
-}
+  function isValidPhoneNumer(phoneNumber: string){
+    const phoneRegex = /^[0-9]{10,11}$/;
+    return phoneRegex.test(phoneNumber);
+  }
+
   useEffect(() => {
     // Lấy dữ liệu hồ sơ người dùng khi trang được tải
     const fetchData = async () => {

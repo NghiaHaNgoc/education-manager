@@ -11,6 +11,7 @@ import { Role, Student } from "../../Model/userModel";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 import ClassesPage from "./ClassesPage/ClassesPage";
 import type { DescriptionsProps } from 'antd';
+import { PlusOutlined } from "@ant-design/icons";
 
 export default function ListPage() {
 
@@ -24,6 +25,7 @@ export default function ListPage() {
   const [rowSelected , setRowSelected] = useState<any>({});
   const [detailObject , setDetailObject] = useState<any>({});
   const [isUpdateList , setIsUpdateList] = useState(true);
+  const [totalObj , setTotalObj] = useState(0);
 
   const object = useMemo(() => {
     return typeList === 'students' ? 'student' : typeList === 'classes' ? 'class' : 'lecturer'
@@ -41,6 +43,7 @@ export default function ListPage() {
     getObjectsService(typeList || 'students')
       .then(res => {
         setListObjects(res[`${object}_list`]);
+        setTotalObj(res.total)
         setIsLoading(false)
       })
       .catch(resFail => {
@@ -62,7 +65,7 @@ export default function ListPage() {
 
   const mapFieldClassOfObj = (fieldObjInClass : any) => {
     if(object === 'student'){
-      return fieldObjInClass.class['class_code'] || 'Not class'
+      return fieldObjInClass?.class['class_code'] || 'Not class'
     }else{
       return fieldObjInClass.map((obj : any) => {
         return obj.class['class_code']
@@ -126,8 +129,10 @@ export default function ListPage() {
                 />
               ) : (
                 <div>
-                  <div>
+                  <div className="header-list" style={{margin:"15px 0"}}>
+                    <div className="header-list__title">{`Total ${typeList} : ${totalObj}`}</div>
                     <button onClick={() => setIsOpenModal(true)}>
+                      <PlusOutlined style={{marginRight:7}} />
                       {`Add new ${object}`}
                     </button>
                   </div>
