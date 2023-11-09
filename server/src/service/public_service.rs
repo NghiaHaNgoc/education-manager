@@ -106,6 +106,10 @@ pub async fn login(
         header::CONTENT_TYPE,
         HeaderValue::from_static("application/json"),
     );
+    // header_map.insert(
+    //     header::ACCESS_CONTROL_ALLOW_ORIGIN,
+    //     "https://localhost:3000".parse().unwrap()
+    //     );
     header_map.insert(header::SET_COOKIE, cookie.to_string().parse().unwrap());
 
     GeneralResponse::new(

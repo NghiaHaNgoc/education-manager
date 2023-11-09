@@ -6,14 +6,11 @@ use axum::{
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 use crate::model::{
-    database_model::{Lecturer, Student},
     DatabaseResponseError, GeneralResponse,
 };
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ClassDetail {
     class_code: Option<String>,
@@ -22,16 +19,26 @@ pub struct ClassDetail {
     lecturer_in_class: Vec<LecturerInClass>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StudentInClass {
     student: Option<Student>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LecturerInClass {
     lecturer: Option<Lecturer>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Student {
+    student_id: String,
+    full_name: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Lecturer {
+    lecturer_id: String,
+    full_name: Option<String>
 }
 
 pub async fn class_detail(

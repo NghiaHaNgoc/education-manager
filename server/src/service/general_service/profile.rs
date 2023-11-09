@@ -8,7 +8,6 @@ use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StudentProfile {
     student_id: Option<String>,
@@ -21,7 +20,6 @@ pub struct StudentProfile {
     student_in_class: Option<InClassProfile>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LecturerProfile {
     lecturer_id: Option<String>,
@@ -34,7 +32,6 @@ pub struct LecturerProfile {
     lecturer_in_class: Option<Vec<InClassProfile>>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InClassProfile {
     class: Option<Class>,

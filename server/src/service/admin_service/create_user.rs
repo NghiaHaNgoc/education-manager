@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
 use crate::model::{
-    database_model::{Gender, Lecturer, Role, Student},
+    database_model::{Gender, Role},
     GeneralResponse,
 };
 
@@ -21,6 +21,31 @@ pub struct NewUser {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
+}
+
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct NewLecturer {
+    pub lecturer_id: Option<String>,
+    pub full_name: Option<String>,
+    pub birth: Option<String>,
+    pub gender: Option<Gender>,
+    pub address: Option<String>,
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    pub password: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct NewStudent {
+    pub student_id: Option<String>,
+    pub full_name: Option<String>,
+    pub birth: Option<String>,
+    pub gender: Option<Gender>,
+    pub address: Option<String>,
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    pub password: Option<String>,
 }
 pub async fn create_user(
     State(db): State<Arc<Postgrest>>,
@@ -49,14 +74,14 @@ pub async fn create_user(
     println!("{}", text_result);
     match new_user.role {
         Role::Student => {
-            let mut student: Vec<Student> = match serde_json::from_str(&text_result) {
+            let mut student: Vec<NewStudent> = match serde_json::from_str(&text_result) {
                 Ok(student) => student,
                 Err(_) => return GeneralResponse::internal_server_error(None),
             };
             GeneralResponse::body_ok(serde_json::to_string(&student.remove(0)).unwrap())
         }
         Role::Lecturer => {
-            let mut lecturer: Vec<Lecturer> = match serde_json::from_str(&text_result) {
+            let mut lecturer: Vec<NewLecturer> = match serde_json::from_str(&text_result) {
                 Ok(lecturer) => lecturer,
                 Err(_) => return GeneralResponse::internal_server_error(None),
             };

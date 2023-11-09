@@ -13,7 +13,6 @@ use crate::model::{
     DatabaseResponseError, GeneralResponse,
 };
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LecturerDetail {
     lecturer_id: Option<String>,

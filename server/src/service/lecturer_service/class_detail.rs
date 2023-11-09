@@ -8,14 +8,11 @@ use axum::{
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 use crate::model::{
-    database_model::{Lecturer, Student},
     DatabaseResponseError, GeneralResponse, TokenClaims,
 };
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ClassDetail {
     class_code: Option<String>,
@@ -24,16 +21,26 @@ pub struct ClassDetail {
     lecturer_in_class: Vec<LecturerInClass>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StudentInClass {
     student: Student,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LecturerInClass {
     lecturer: Lecturer,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Student {
+    student_id: String,
+    full_name: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Lecturer {
+    lecturer_id: String,
+    full_name: Option<String>
 }
 
 pub async fn class_detail(
@@ -52,9 +59,9 @@ pub async fn class_detail(
         db_class = db_class
             .into_iter()
             .filter(|x| {
-                let user_id = Some(user_data.user_id.clone());
+                let user_id = &user_data.user_id;
                 for x in &x.lecturer_in_class {
-                    if x.lecturer.lecturer_id.eq(&user_id) {
+                    if x.lecturer.lecturer_id.eq(user_id) {
                         return true;
                     }
                 }

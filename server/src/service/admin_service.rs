@@ -13,3 +13,5 @@ pub mod remove_students_from_class;
 pub mod remove_user;
 pub mod student_detail;
 pub mod update_class;
+pub mod student_not_in_any_class;
+pub mod lecturer_not_in_any_class;

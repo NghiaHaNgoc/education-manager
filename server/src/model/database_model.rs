@@ -37,7 +37,6 @@ impl fmt::Display for Gender {
     }
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
     #[serde(skip_serializing)]
@@ -49,10 +48,10 @@ pub struct User {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
+    #[serde(skip_serializing)]
     pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Admin {
     #[serde(skip_serializing)]
@@ -64,10 +63,10 @@ pub struct Admin {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
+    #[serde(skip_serializing)]
     pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Lecturer {
     #[serde(skip_serializing)]
@@ -79,10 +78,10 @@ pub struct Lecturer {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
+    #[serde(skip_serializing)]
     pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Student {
     #[serde(skip_serializing)]
@@ -94,10 +93,10 @@ pub struct Student {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
+    #[serde(skip_serializing)]
     pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Class {
     #[serde(skip_serializing)]

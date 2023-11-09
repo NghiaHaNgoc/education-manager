@@ -13,7 +13,6 @@ use crate::model::{
     DatabaseResponseError, GeneralResponse,
 };
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StudentDetail {
     student_id: Option<String>,
@@ -23,7 +22,7 @@ pub struct StudentDetail {
     address: Option<String>,
     email: Option<String>,
     phone: Option<String>,
-    student_in_class: Vec<StudentInClass>,
+    student_in_class: Option<StudentInClass>,
 }
 
 #[skip_serializing_none]
