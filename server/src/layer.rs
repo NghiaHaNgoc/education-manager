@@ -7,7 +7,6 @@ use axum::response::{IntoResponse, Response};
 use axum::Extension;
 use jsonwebtoken::{DecodingKey, Validation};
 use postgrest::Postgrest;
-use tokio::sync::Mutex;
 
 use crate::model::{
     database_model::{Admin, Lecturer, Role, Student},
@@ -15,7 +14,7 @@ use crate::model::{
 };
 
 pub async fn extract_authorization<B>(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     mut req: Request<B>,
     next: Next<B>,
 ) -> Response {
@@ -35,8 +34,6 @@ pub async fn extract_authorization<B>(
     match claims.role {
         Role::Student => {
             let a = db
-                .lock()
-                .await
                 .from("student")
                 .select("*")
                 .eq("student_id", claims.user_id.as_str())
@@ -53,8 +50,6 @@ pub async fn extract_authorization<B>(
         }
         Role::Lecturer => {
             let a = db
-                .lock()
-                .await
                 .from("lecturer")
                 .select("*")
                 .eq("lecturer_id", claims.user_id.as_str())
@@ -71,8 +66,6 @@ pub async fn extract_authorization<B>(
         }
         Role::Admin => {
             let a = db
-                .lock()
-                .await
                 .from("admin")
                 .select("*")
                 .eq("admin_id", claims.user_id.as_str())
@@ -118,7 +111,7 @@ pub async fn student_layer<B>(
         GeneralResponse::unauthorized(None).into_response()
     }
 }
-pub async fn teacher_layer<B>(
+pub async fn lecturer_layer<B>(
     Extension(user_claims): Extension<TokenClaims>,
     req: Request<B>,
     next: Next<B>,

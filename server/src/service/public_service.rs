@@ -8,7 +8,6 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::database_model::Role;
 use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECRECT_KEY};
@@ -17,10 +16,11 @@ use crate::model::{GeneralResponse, LoginData, LoginSuccess, TokenClaims, SECREC
 struct CustomUser {
     user_id: Option<String>,
     role: Option<Role>,
+    full_name: Option<String>,
 }
 
 pub async fn login(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Json(login_data): Json<LoginData>,
 ) -> impl IntoResponse {
     println!("{:?}", login_data);
@@ -28,35 +28,30 @@ pub async fn login(
     let mut user = CustomUser {
         user_id: None,
         role: None,
+        full_name: None,
     };
     let mut verified = false;
 
     // NOTE: initialize send query to database
     let student_query = db
-        .lock()
-        .await
         .from("student")
-        .select("user_id:student_id")
+        .select("user_id:student_id, full_name")
         .and(format!(
             "student_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
         ))
         .execute();
     let lecturer_query = db
-        .lock()
-        .await
         .from("lecturer")
-        .select("user_id:lecturer_id")
+        .select("user_id:lecturer_id, full_name")
         .and(format!(
             "lecturer_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
         ))
         .execute();
     let admin_query = db
-        .lock()
-        .await
         .from("admin")
-        .select("user_id:admin_id")
+        .select("user_id:admin_id, full_name")
         .and(format!(
             "admin_id.eq.{}, password.eq.{}",
             login_data.username, login_data.password
@@ -98,7 +93,11 @@ pub async fn login(
     if !verified {
         return GeneralResponse::unauthorized(Some("Login failed!".to_string()));
     }
-    let role = user.role.clone().unwrap();
+    let CustomUser {
+        role,
+        user_id,
+        full_name,
+    } = user.clone();
     let token = create_token(user);
     let cookie = create_cookie(&token);
 
@@ -107,12 +106,16 @@ pub async fn login(
         header::CONTENT_TYPE,
         HeaderValue::from_static("application/json"),
     );
+    // header_map.insert(
+    //     header::ACCESS_CONTROL_ALLOW_ORIGIN,
+    //     "https://localhost:3000".parse().unwrap()
+    //     );
     header_map.insert(header::SET_COOKIE, cookie.to_string().parse().unwrap());
 
     GeneralResponse::new(
         StatusCode::OK,
         Some(header_map),
-        LoginSuccess::to_json(token, role),
+        LoginSuccess::to_json(token, role, user_id, full_name),
     )
 }
 

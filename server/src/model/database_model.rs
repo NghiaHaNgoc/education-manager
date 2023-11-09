@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::fmt;
 use serde_with::skip_serializing_none;
+use std::fmt;
 
 /* NOTE: convention
 *  Record link data struct will prefix in name with "Rcl"
@@ -18,7 +18,7 @@ impl fmt::Display for Role {
         match self {
             Role::Student => write!(f, "Student"),
             Role::Lecturer => write!(f, "Lecturer"),
-            Role::Admin => write!(f, "Admin")
+            Role::Admin => write!(f, "Admin"),
         }
     }
 }
@@ -26,19 +26,32 @@ impl fmt::Display for Role {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum Gender {
     Male,
-    Female
+    Female,
 }
 impl fmt::Display for Gender {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Gender::Male => write!(f, "MALE"),
-            Gender::Female => write!(f, "FEMALE")
+            Gender::Male => write!(f, "Male"),
+            Gender::Female => write!(f, "Female"),
         }
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct User {
+    #[serde(skip_serializing)]
+    pub id: Option<u32>,
+    pub user_id: Option<String>,
+    pub full_name: Option<String>,
+    pub birth: Option<String>,
+    pub gender: Option<Gender>,
+    pub address: Option<String>,
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    #[serde(skip_serializing)]
+    pub password: Option<String>,
+}
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Admin {
     #[serde(skip_serializing)]
@@ -50,10 +63,10 @@ pub struct Admin {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
-    pub password: Option<String>
+    #[serde(skip_serializing)]
+    pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Lecturer {
     #[serde(skip_serializing)]
@@ -65,10 +78,10 @@ pub struct Lecturer {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
-    pub password: Option<String>
+    #[serde(skip_serializing)]
+    pub password: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Student {
     #[serde(skip_serializing)]
@@ -80,6 +93,26 @@ pub struct Student {
     pub address: Option<String>,
     pub email: Option<String>,
     pub phone: Option<String>,
-    pub password: Option<String>
+    #[serde(skip_serializing)]
+    pub password: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Class {
+    #[serde(skip_serializing)]
+    pub id: Option<u32>,
+    pub class_code: Option<String>,
+    pub description: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct StudentInClass {
+    pub student: String,
+    pub class: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct LecturerInClass {
+    pub lecturer: String,
+    pub class: String,
+}

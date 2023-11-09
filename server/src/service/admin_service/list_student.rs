@@ -7,7 +7,6 @@ use axum::{
 };
 use postgrest::Postgrest;
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
 use crate::model::{database_model::Student, GeneralResponse};
 
@@ -29,7 +28,7 @@ pub struct QueryOptions {
 }
 
 pub async fn list_student(
-    State(db): State<Arc<Mutex<Postgrest>>>,
+    State(db): State<Arc<Postgrest>>,
     Query(QueryOptions {
         page_number,
         students_per_page,
@@ -41,8 +40,6 @@ pub async fn list_student(
     let to_index = from_index + students_per_page - 1;
 
     let student_query = db
-        .lock()
-        .await
         .from("student")
         .select("student_id, full_name, birth, gender, address, email, phone")
         .exact_count()
@@ -61,7 +58,7 @@ pub async fn list_student(
         total,
     };
 
-    GeneralResponse::ok(serde_json::to_string(&student_list_response).unwrap())
+    GeneralResponse::body_ok(serde_json::to_string(&student_list_response).unwrap())
 }
 
 fn get_range_and_total(header: &HeaderMap) -> (String, u32) {
