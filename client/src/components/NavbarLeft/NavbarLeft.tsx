@@ -29,12 +29,13 @@ export default function NavbarLeft() {
     ]
 
     const customeItemByAuthorization = () => {
+        console.log(items)
         switch (role) {
             case 'Admin':
                 return items.filter(item => item?.key !== 'profile')
             case 'Student':
             case 'Lecturer':
-                return items.filter(item => item?.key === 'profile')
+                return items.filter(item => item?.key !== 'list')
             default:
                 break;
         }

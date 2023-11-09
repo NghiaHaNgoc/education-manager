@@ -32,5 +32,10 @@ export const removeObjsToClassService = async (data : any , obj: string ) => {
     return res.data
 }
 
+export const detailClassByObjService = async (classCode : string , obj : string) => {
+    const res = await axios.get(`${API_URL}/${obj}/class-detail/${classCode}`, config())
+    return res.data
+}
+
 
 
