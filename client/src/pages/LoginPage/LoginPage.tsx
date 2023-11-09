@@ -33,7 +33,7 @@ export default function LoginPage() {
       <div id="background"></div> 
       <div id="LoginPage">
         <div className='form-login'>
-          <div className="title">Đăng nhập</div>
+          <div className="title">Login</div>
           <Form
             name="normal_login"
             style={{
@@ -76,7 +76,6 @@ export default function LoginPage() {
               <Button type="primary" htmlType="submit" className="login-form-button">
                 Đăng nhập
               </Button>
-              Or <a href="">register now!</a>
             </Form.Item>
           </Form>
         </div>        

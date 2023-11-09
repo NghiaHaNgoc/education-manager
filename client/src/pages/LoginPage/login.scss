@@ -1,10 +1,12 @@
 #background {
-    background-image: url('https://dnuni.fpt.edu.vn/wp-content/uploads/2021/01/FPTU-CSVC1thumb.jpg');
-    background-repeat: no-repeat;
+    background-image: url(../../assets/img/loginpage.jpg);
+    overflow: hidden;
     background-size: cover;
-    position: relative;
+    background-repeat: no-repeat;
+    background-position: center center;
     height: 100vh;
     width: 100vw;
+    filter: brightness(120%);
 }
 
 #LoginPage{
