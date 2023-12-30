@@ -169,6 +169,11 @@
  ```
 - `class` and `lecturers` are required.
 
+### End point `admin/search-user`
+ - Method: `GET`
+ - Params: `role`, `name`, `page_number`, `user_per_page`, `case_sensitive`
+- `role` and `name` are required.
+
 ## Lecturer
 
 - End point for lecturer role
